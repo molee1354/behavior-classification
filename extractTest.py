@@ -49,10 +49,10 @@ def main():
     # velocities = [7.0]
     # angles = [25]
 
+
+    extractsPath =  f"data_Extracts\\data_Extract_{TASK_ID}_{TRIAL_ID}"
     for angle in angles:
-        for velocity in [f"{vel:6.4f}" for vel in velocities]:
-            # the path for the data extracts for the computer decision
-            path = f"data_Extracts\\data_Extract_{TASK_ID}_{TRIAL_ID}\\outputs_V{velocity}_A{angle}.json"
+        for path in [ f"{extractsPath}\\{p}" for p in os.listdir(extractsPath) if f"_A{angle}" in p ]:
 
             #* creating an output object that holds the necessary data
             output = Comparer( path )
@@ -83,7 +83,7 @@ def main():
             #* saving the computer behavior
             #todo Export <<output.behavior_obj.decision>> this here
             #! comp_dec is a tuple --> (behavior, confidence)
-            compDict[f"V{velocity}_A{angle}"] = comp_dec
+            compDict[path[-16:-5]] = (comp_dec.behavior, comp_dec.confidence)
 
             
             #* printing the behavior output

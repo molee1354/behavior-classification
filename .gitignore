@@ -2,6 +2,8 @@
 __pycache__/
 data_Extracts/
 behaviors/
+output_logs/
+output_plots/
 
 # filetypes
 *.txt

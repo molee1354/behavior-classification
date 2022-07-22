@@ -211,8 +211,6 @@ def main():
     # vectors to loop angles -> velocities
     # velocities = np.round(np.linspace(0.4064,2.8446,13),4)
     angles = np.linspace(20, 70, 11, dtype=int)
-    # velocities = [7.0]
-    # angles = [25]
 
     # v = 0.8127
     # a = 20

@@ -4,7 +4,7 @@
             "adapter": "debugpy",
             "configuration": {
                 "request": "launch",
-                "program": "pathExtract.py",
+                "program": "behaviorPlots.py",
                 "cwd": "E:\\mokin\\behavior_classification",
                 "externalConsole": true,
                 "MIMode": "pdb"

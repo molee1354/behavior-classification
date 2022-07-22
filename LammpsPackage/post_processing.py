@@ -319,7 +319,7 @@ class Comparer:
         return _DecisionPackage(
 
             #TODO review how the filename for this works
-            iteration=self.filename[-13:-5],
+            iteration=self.filename[-16:-5],
             
             behavior=behavior,
 
@@ -388,7 +388,7 @@ class Visualizer:
         ) = plt.subplots(2,3, figsize = (14,10))
 
         fig.suptitle(
-            f"{package.iteration}; Comp: [{package.computer_decision}] (confidence: {package.confidence})",
+            f"{package.iteration}; Comp: [{package.behavior}] (confidence: {package.confidence})",
             fontweight = 'bold'
         )
 
