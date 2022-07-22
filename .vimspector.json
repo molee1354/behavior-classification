@@ -1,0 +1,14 @@
+{
+    "configurations": {
+        "Launch": {
+            "adapter": "debugpy",
+            "configuration": {
+                "request": "launch",
+                "program": "pathExtract.py",
+                "cwd": "E:\\mokin\\behavior_classification",
+                "externalConsole": true,
+                "MIMode": "pdb"
+            }
+        }
+    }
+}

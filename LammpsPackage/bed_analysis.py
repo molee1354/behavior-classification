@@ -233,7 +233,7 @@ class DiscFile(RegFile):
             if (dataDict[time[1]]['disc_xs'] + dataDict[time[1]]['disc_rs']) > 0.98*self.box_width:
                 return dataDict
 
-        # return dataDict
+        return dataDict
 
     def get_data(self, parameter: str , as_array: bool = False) -> dict:
         """

@@ -107,7 +107,7 @@ def get_data_dict(bed_filepath: str, disc_filepath: str) -> list[float]:
     #! resize the bed to minimize the looping times
     #! 1.4 --> 2.5 seconds
     #! 1.35 --> 3.0 seconds
-    reduced_idx = initBed.is_greater('y', 0.10)
+    reduced_idx = initBed.is_greater('y', 0.12)
 
     #* the timesteps for which the data is significant
     # ts_cutoff = pDisc.ts_cutoff
@@ -214,17 +214,22 @@ def main():
     # velocities = [7.0]
     # angles = [25]
 
+    # v = 0.8127
+    # a = 20
+    # extract_to_json(f"E:\\mokin\\moon_raw\\dmp.reg.Moon_1x_V{v}_A{a}", 
+    #                 f"E:\\mokin\\moon_raw\\dmp.disc.Moon_1x_V{v}_A{a}")
+    
     for angle in angles:
         beds = []
         discs = []
         # for velocity in [f"{vel:6.4f}" for vel in velocities]:
-        beds = ( get_path("bed", angle) )
-        discs = ( get_path("disc", angle) )
-        # breakpoint()
+        beds = ( get_path("bed", f"_A{angle}") )
+        discs = ( get_path("disc", f"_A{angle}") )
 
-        # print("beds", beds)
-        # print("discs", discs)
-        # exit()
+        # debug print
+        # for idx,(bed,disc) in enumerate(zip(beds,discs)):
+        #     print(f"{idx:2d} -> {bed} | {disc}")
+        # print("")
 
         # using multiple processors
         with concurrent.futures.ProcessPoolExecutor() as executor:
