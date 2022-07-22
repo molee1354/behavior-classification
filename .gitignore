@@ -1,0 +1,7 @@
+# directories
+__pycache__/
+data_extracts/
+
+# filetypes
+*.txt
+*.pyc
