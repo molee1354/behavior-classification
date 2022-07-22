@@ -1,6 +1,7 @@
 # directories
 __pycache__/
 data_extracts/
+behaviors/
 
 # filetypes
 *.txt
