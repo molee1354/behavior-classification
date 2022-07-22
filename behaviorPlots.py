@@ -59,15 +59,15 @@ def processData(data_dict: dict) -> list[list[int]]:
             for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
 
                 # adding the confidence
-                confidenceList_I.append(data_dict[key][1])
+                confidenceList_I.append(data_dict[key]["confidence"])
 
-                if data_dict[key][0] == "FS":
+                if data_dict[key]["behavior"] == "FS":
                     behaviorList_I.append(0)
 
-                if data_dict[key][0] == "RO":
+                if data_dict[key]["behavior"] == "RO":
                     behaviorList_I.append(1)
                     
-                if data_dict[key][0] == "RC":
+                if data_dict[key]["behavior"] == "RC":
                     behaviorList_I.append(2)
 
             behaviorsList.append(behaviorList_I)

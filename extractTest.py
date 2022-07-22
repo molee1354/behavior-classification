@@ -83,7 +83,14 @@ def main():
             #* saving the computer behavior
             #todo Export <<output.behavior_obj.decision>> this here
             #! comp_dec is a tuple --> (behavior, confidence)
-            compDict[path[-16:-5]] = (comp_dec.behavior, comp_dec.confidence)
+            compDict[path[-16:-5]] = {
+                 "behavior" : comp_dec.behavior,
+                 "confidence": comp_dec.confidence,
+                 "contact_pIDs": comp_dec.contact_pIDs,
+                 "airborne": comp_dec.airborne,
+                 "surpasses": comp_dec.surpasses,
+                 "crater_out": comp_dec.crater_out
+             }
 
             
             #* printing the behavior output

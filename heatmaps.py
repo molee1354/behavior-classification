@@ -46,21 +46,24 @@ def processHuman(data_dict: dict) -> list[list[int]]:
 
     # for the normal dictionary 
     # this way the data type of the computer output can be anything other than "str"
+    
     behaviorsList = []
     for angle in np.linspace(20, 70, 11, dtype=int):
         behaviorList_I = []
-        for velocity in np.linspace(1.0, 7.0, 13):
+        # for velocity in np.linspace(1.0, 7.0, 13):
+        for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
 
-            if data_dict[f"V{velocity}_A{angle}"] == "FS":
+            if data_dict[key]["behavior"] == "FS":
                 behaviorList_I.append(0)
-            if data_dict[f"V{velocity}_A{angle}"] == "RO":
+            if data_dict[key]["behavior"] == "RO":
                 behaviorList_I.append(1)
-            if data_dict[f"V{velocity}_A{angle}"] == "RC":
+            if data_dict[key]["behavior"] == "RC":
                 behaviorList_I.append(2)
 
         behaviorsList.append(behaviorList_I)
 
     return behaviorsList
+
 
 def processData(input_dict: dict, parameter: str) -> list[list[int]]:
     """
@@ -73,7 +76,7 @@ def processData(input_dict: dict, parameter: str) -> list[list[int]]:
     """
 
     return [
-        [input_dict[f"V{velocity}_A{angle}"][parameter] for velocity in np.linspace(1.0, 7.0, 13) ] for angle in np.linspace(20, 70, 11, dtype=int)
+        [input_dict[key][parameter] for key in [k for k in input_dict.keys() if f"_A{angle}" in k] ] for angle in np.linspace(20, 70, 11, dtype=int)
     ]
 
 def main():
@@ -83,10 +86,10 @@ def main():
         compDict = json.load(file)
 
     #! temp human behavior open
-    with open(f"behaviors\\human\\Human_Behavior_{TASK_ID}.json", 'r') as file:
-        humanDict = json.load(file)
+    # with open(f"behaviors\\human\\Human_Behavior_{TASK_ID}.json", 'r') as file:
+    #     humanDict = json.load(file)
 
-    humanData = processHuman(humanDict)
+    # humanData = processHuman(humanDict)
 
     # keys = [ key for key in next(iter(compDict.values())) if (key != "confidence") and (key != "behavior")]
     keys = [ key for key in next(iter(compDict.values())) if (key != "confidence") ]
@@ -124,11 +127,11 @@ def main():
     print(f"RCs: min/max = {min(rcs)}/{max(rcs)}\tmean/median = {mean(rcs):.2f}/{(median(rcs))}")
 
     #* plotting
-    fig, ((ax2, ax3),(ax1, ax4)) = plt.subplots(2,2, figsize=(10,9))
+    fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(10,9))
     fig.suptitle(f"{TASK_ID} Quantities Comparison", fontsize = 16, fontweight = "bold")
 
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angles
-    x_axis = list(np.linspace(1.0, 7.0, 13)) # velocities
+    x_axis = list(np.round(np.linspace(0.4064,2.8446,13),4))
 
     # custom colormap defs
     myColors = (
@@ -156,52 +159,33 @@ def main():
 
     )
     ax1.invert_yaxis()
+    # TODO some fixedlocator number not matching right here...
     ax1.set_xticklabels(x_axis, rotation = 45)
     ax1.set_xlabel("Velocities")
     ax1.set_ylabel("Angles")
     colorabar1 = ax1.collections[0].colorbar
 
     # particle Contact Length with Annotation
-    ax4.set_title("Unique Contact Particles (Mag)")
-    ax4 = sns.heatmap(
-        ax = ax4, 
+    ax2.set_title("Unique Contact Particles (Mag)")
+    ax2 = sns.heatmap(
+        ax = ax2, 
         data = datas[PLOT_DATA], 
         yticklabels = y_axis,
         linewidths = 2, 
         cmap = "Blues", 
         annot = True
     )
-    ax4.invert_yaxis()
-    ax4.set_xticklabels(x_axis, rotation = 45)
-    ax4.set_xlabel("Velocities")
-    ax4.set_ylabel("Angles")
-    colorbar4 = ax4.collections[0].colorbar
-    
-    # Computer Behavior Plot
-    ax2.set_title("Computer Plot")
-    ax2 = sns.heatmap(
-        ax = ax2,
-        data =compData,
-        yticklabels=y_axis,
-        linewidths=2,
-        cmap=colors,
-        vmax=2, vmin=0
-    )
     ax2.invert_yaxis()
-    ax2.set_xticklabels(x_axis, rotation=45)
+    ax2.set_xticklabels(x_axis, rotation = 45)
     ax2.set_xlabel("Velocities")
     ax2.set_ylabel("Angles")
-    ax2.margins(1)
-
-    colorbar2 = ax2.collections[0].colorbar
-    colorbar2.set_ticks([0.33,1.0,1.66])
-    colorbar2.set_ticklabels(["FS","RO","RC"])
+    colorbar4 = ax2.collections[0].colorbar
     
-    # Human Behavior Plot
-    ax3.set_title("Human Plot")
+    # Computer Behavior Plot
+    ax3.set_title("Computer Plot")
     ax3 = sns.heatmap(
         ax = ax3,
-        data = humanData,
+        data =compData,
         yticklabels=y_axis,
         linewidths=2,
         cmap=colors,
@@ -213,9 +197,29 @@ def main():
     ax3.set_ylabel("Angles")
     ax3.margins(1)
 
-    colorbar3 = ax3.collections[0].colorbar
-    colorbar3.set_ticks([0.33,1.0,1.66])
-    colorbar3.set_ticklabels(["FS","RO","RC"])
+    colorbar2 = ax3.collections[0].colorbar
+    colorbar2.set_ticks([0.33,1.0,1.66])
+    colorbar2.set_ticklabels(["FS","RO","RC"])
+    
+    # Human Behavior Plot
+    # ax3.set_title("Human Plot")
+    # ax3 = sns.heatmap(
+    #     ax = ax3,
+    #     data = humanData,
+    #     yticklabels=y_axis,
+    #     linewidths=2,
+    #     cmap=colors,
+    #     vmax=2, vmin=0
+    # )
+    # ax3.invert_yaxis()
+    # ax3.set_xticklabels(x_axis, rotation=45)
+    # ax3.set_xlabel("Velocities")
+    # ax3.set_ylabel("Angles")
+    # ax3.margins(1)
+
+    # colorbar3 = ax3.collections[0].colorbar
+    # colorbar3.set_ticks([0.33,1.0,1.66])
+    # colorbar3.set_ticklabels(["FS","RO","RC"])
 
     # plt.subplots_adjust(bottom=0.21)
     plt.tight_layout()
