@@ -1,24 +1,26 @@
+import os
 import sys
 import json
 import numpy as np
 import seaborn as sns
-import openpyxl as pxl
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from pathExtract import TASK_ID, TRIAL_ID
+import var
 
+# importing variables
 try:
     TASK_ID = sys.argv[1]
 except IndexError:
-    pass
+    TASK_ID = var.TASK_ID
+
 try:
     TRIAL_ID = sys.argv[2]
 except IndexError:
-    pass
+    TRIAL_ID = var.TRIAL_ID
 
 
-def processData(data_dict: dict) -> list[list[int]]:
+def processData(data_dict: dict) -> tuple[list[int],list[float]]:
     """
     Function to process the input dictionaries to a 2D list for plotting
         - Args
@@ -28,68 +30,69 @@ def processData(data_dict: dict) -> list[list[int]]:
     """
     
     # for the normal dictionary 
-    if type(next(iter(data_dict.values()))) == str: 
-        # this way the data type of the computer output can be anything other than "str"
-        behaviorsList = []
-        for angle in np.linspace(20, 70, 11, dtype=int):
-            behaviorList_I = []
-            # for velocity in np.linspace(1.0, 7.0, 13):
-            for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
+    # if type(next(iter(data_dict.values()))) == str: 
+    #     # this way the data type of the computer output can be anything other than "str"
+    #     behaviorsList = []
+    #     for angle in np.linspace(20, 70, 11, dtype=int):
+    #         behaviorList_I = []
+    #         # for velocity in np.linspace(1.0, 7.0, 13):
+    #         for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
 
-                if data_dict[key][0] == "FS":
-                    behaviorList_I.append(0)
-                if data_dict[key][0] == "RO":
-                    behaviorList_I.append(1)
-                if data_dict[key][0] == "RC":
-                    behaviorList_I.append(2)
+    #             if data_dict[key][0] == "FS":
+    #                 behaviorList_I.append(0)
+    #             if data_dict[key][0] == "RO":
+    #                 behaviorList_I.append(1)
+    #             if data_dict[key][0] == "RC":
+    #                 behaviorList_I.append(2)
 
-            behaviorsList.append(behaviorList_I)
+    #         behaviorsList.append(behaviorList_I)
 
-        return behaviorsList
+    #     return behaviorsList
     
     # extracting the confidence values 
     #todo the loaded data is now a key-value thing so the indexing should change
-    else:
-        behaviorsList = []
-        confidenceList = []
-        for angle in np.linspace(20, 70, 11, dtype=int):
-            # initializing each row 
-            behaviorList_I = []
-            confidenceList_I = []
-            for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
+    # else:
+    behaviorsList = []
+    confidenceList = []
+    for angle in np.linspace(20, 70, 11, dtype=int):
+        # initializing each row 
+        behaviorList_I = []
+        confidenceList_I = []
+        for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
 
-                # adding the confidence
-                confidenceList_I.append(data_dict[key]["confidence"])
+            # adding the confidence
+            confidenceList_I.append(data_dict[key]["confidence"])
 
-                if data_dict[key]["behavior"] == "FS":
-                    behaviorList_I.append(0)
+            if data_dict[key]["behavior"] == "FS":
+                behaviorList_I.append(0)
 
-                if data_dict[key]["behavior"] == "RO":
-                    behaviorList_I.append(1)
-                    
-                if data_dict[key]["behavior"] == "RC":
-                    behaviorList_I.append(2)
+            if data_dict[key]["behavior"] == "RO":
+                behaviorList_I.append(1)
+                
+            if data_dict[key]["behavior"] == "RC":
+                behaviorList_I.append(2)
 
-            behaviorsList.append(behaviorList_I)
-            confidenceList.append(confidenceList_I)
+        behaviorsList.append(behaviorList_I)
+        confidenceList.append(confidenceList_I)
 
-        return behaviorsList, confidenceList 
-        
+    return behaviorsList, confidenceList 
+    
 
 
 def main():
 
-    with open(f"behaviors\\computer\\Computer_Behavior_{TASK_ID}_{TRIAL_ID}.json", 'r') as readC:
+    behavior_savepath = f"{var.output_root}/behaviors/computer"
+    with open(f"{behavior_savepath}/Computer_Behavior_{TASK_ID}_{TRIAL_ID}.json", 'r') as readC:
         compDict = json.load(readC)
 
     # the human dictionary is probably not sorted
     # try:
-    #     with open(f"behaviors\\human\\Human_Behavior_{TASK_ID}.json", 'r') as file:
+    #     with open(f"behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
     #         humanDict = json.load(file)
     
     # if there is no json file to refer to, go to the old xlsx file
     # except FileNotFoundError:
-    #     wb_file = pxl.load_workbook(f"behaviors\\human\\{TASK_ID}_batchManager.xlsx") #only need relative path
+    #     wb_file = pxl.load_workbook(f"behaviors/human/{TASK_ID}_batchManager.xlsx") #only need relative path
     #     sheet = wb_file.active
     #     MAXROW = sheet.max_row
     #     humanDict = {}
@@ -109,7 +112,7 @@ def main():
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angle
     x_axis = list(np.round(np.linspace(0.4064,2.8446,13),4))
     
-    total_iter = len(x_axis)*len(y_axis)
+    # total_iter = len(x_axis)*len(y_axis)
 
     #calling the function on the dictionaries
     # humanBehavior = np.array(processData(humanDict))
@@ -144,7 +147,7 @@ def main():
         (0.8,0.8,0.8,1), 
         (0,0,0,1)
     )
-    colorsBW = LinearSegmentedColormap.from_list('Custom', myColorsBW, len(myColorsBW))
+    # colorsBW = LinearSegmentedColormap.from_list('Custom', myColorsBW, len(myColorsBW))
 
     #plotting
     ax1.set_title("Computer plot")
@@ -180,7 +183,7 @@ def main():
     ax2.set_xlabel("Velocities")
     ax2.set_ylabel("Angles")
 
-    colorbar4 = ax1.collections[0].colorbar
+    colorbar4 = ax2.collections[0].colorbar
     colorbar4.set_ticks(np.linspace(0,1,11)) 
 
     # ax2.set_title("Human Plot")
@@ -233,8 +236,11 @@ def main():
     )
     # plt.gcf().text(0.1, 0.1, outputText, fontsize=12)
 
+    plots_savepath = f"{var.output_root}/output_plots/behavior_comparisons"
+    os.makedirs(plots_savepath, exist_ok=True)
+    plt.savefig(f"{plots_savepath}/behaviorPlot_{TASK_ID}_{TRIAL_ID}.svg", format = "svg")
+
     plt.show()
-    plt.savefig(f"output_plots\\behavior_comparisons\\behaviorPlot_{TASK_ID}_{TRIAL_ID}.svg", format = "svg")
     # output_plots\behavior_comparisons
     
         

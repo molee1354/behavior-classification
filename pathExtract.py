@@ -10,19 +10,20 @@ from statistics import median
 from operator import itemgetter
 
 from LammpsPackage.bed_analysis import RegFile, DiscFile
+import var
 
-TASK_ID = "Moon_1x"
+# TASK_ID = "Moon_1x"
 try:
     TASK_ID = sys.argv[1]
 except IndexError:
-    pass
+    TASK_ID = var.TASK_ID
 
-# TRIAL_ID = "testing4"
-TRIAL_ID = "extract_3"
+
+# TRIAL_ID = "extract_3"
 try:
     TRIAL_ID = sys.argv[2]
 except IndexError:
-    pass
+    TRIAL_ID = var.TRIAL_ID
 
 def get_points(
     time: tuple[int, int],
@@ -88,7 +89,7 @@ def get_points(
 
     return bed.crater, (mound_x, mound_y), touch_idx
 
-def get_data_dict(bed_filepath: str, disc_filepath: str) -> list[float]:
+def get_data_dict(bed_filepath: str, disc_filepath: str) -> dict:
     """
     Function to unpack the data from the input files into a single dictionary with arrays
         - Args
@@ -173,34 +174,33 @@ def get_disc_paths(filepath: str):
     # getting the arrays from the keys from the first timestep
     return {key: disc.get_data(key, as_array=True) for key in disc.dataDict[disc.timestep0]}
 
-def get_path(filetype: str, angle: int) -> list[str]:
+def get_path(filetype: str, angle: str) -> list[str]:
     """
     Function to get the filepaths for the angles
     """
+
     base = Path(os.getcwd()).parent.absolute() #* getting the parent directory
 
-    all_files = os.listdir( f"{base}\\moon_raw" )
+    all_files = os.listdir( var.raw_root )
 
-    # if filetype == "bed":
-    #     return f"{base.parent.absolute()}\\moon_raw\\dmp.reg.{TASK_ID}_V{vel}_A{angle}"
-    # elif filetype == "disc":
-    #     return f"{base.parent.absolute()}\\moon_raw\\dmp.disc.{TASK_ID}_V{vel}_A{angle}"
     if filetype == "bed":
-        return [ f"{base}\\moon_raw\\{i}" for i in all_files if all( [ (j in i) for j in [TASK_ID,"dmp.reg",str(angle)] ] ) ]
+        return [ f"{var.raw_root}/{i}" for i in all_files if all( [ (j in i) for j in [TASK_ID,"dmp.reg",str(angle)] ] ) ]
     elif filetype == "disc":
-        return [ f"{base}\\moon_raw\\{i}" for i in all_files if all( [ (j in i) for j in [TASK_ID,"dmp.disc",str(angle)] ] ) ]
+        return [ f"{var.raw_root}/{i}" for i in all_files if all( [ (j in i) for j in [TASK_ID,"dmp.disc",str(angle)] ] ) ]
+
+    else:
+        raise Exception(f"The input parameter \"{filetype}\" is invalid")
 
 
 def extract_to_json(bed_filepath: str, disc_filepath: str):
 
-    # path = "C:\\Users\\moosu\\projects\\Research\\lammps_manager\\lammps_repeater\\iterations_A90\\iteration_V5.0_A90\\dmp.reg.LIS01_V5.0_A90" 
     outDict = get_data_dict(bed_filepath, disc_filepath)
 
     #todo   Write in values for keys ['num_timesteps'] and ['disc_r'] maybe for compatibility at the end of dict
 
-    os.makedirs("data_Extracts", exist_ok=True)
-    os.makedirs(f"data_Extracts\\data_Extract_{TASK_ID}_{TRIAL_ID}", exist_ok=True)
-    with open(f"data_Extracts\\data_Extract_{TASK_ID}_{TRIAL_ID}\\outputs_{bed_filepath[-11:]}.json", 'w') as file:
+    os.makedirs(var.extract_root, exist_ok=True)
+    os.makedirs(f"{var.extract_root}/data_Extract_{TASK_ID}_{TRIAL_ID}", exist_ok=True)
+    with open(f"{var.extract_root}/data_Extract_{TASK_ID}_{TRIAL_ID}/outputs_{bed_filepath[-11:]}.json", 'w') as file:
         json.dump(outDict, file, indent=4)
 
     # return bed_filepath[-8:]
@@ -210,19 +210,19 @@ def main():
 
     # vectors to loop angles -> velocities
     # velocities = np.round(np.linspace(0.4064,2.8446,13),4)
-    angles = np.linspace(20, 70, 11, dtype=int)
+    # angles = np.linspace(20, 70, 11, dtype=int)
 
     # v = 0.8127
     # a = 20
-    # extract_to_json(f"E:\\mokin\\moon_raw\\dmp.reg.Moon_1x_V{v}_A{a}", 
-    #                 f"E:\\mokin\\moon_raw\\dmp.disc.Moon_1x_V{v}_A{a}")
+    # extract_to_json(f"E:/mokin/moon_raw/dmp.reg.Moon_1x_V{v}_A{a}", 
+    #                 f"E:/mokin/moon_raw/dmp.disc.Moon_1x_V{v}_A{a}")
     
-    for angle in angles:
+    for angle in var.angles:
         beds = []
         discs = []
         # for velocity in [f"{vel:6.4f}" for vel in velocities]:
-        beds = ( get_path("bed", f"_A{angle}") )
-        discs = ( get_path("disc", f"_A{angle}") )
+        beds =  get_path("bed", f"_A{angle}") 
+        discs = get_path("disc", f"_A{angle}")
 
         # debug print
         # for idx,(bed,disc) in enumerate(zip(beds,discs)):

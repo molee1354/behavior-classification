@@ -4,8 +4,8 @@
             "adapter": "debugpy",
             "configuration": {
                 "request": "launch",
-                "program": "heatmaps.py",
-                "cwd": "E:\\mokin\\behavior_classification",
+                "program": "behaviorPlots.py",
+                "cwd": "~/projects/Research/Granular/behavior-classification",
                 "externalConsole": true,
                 "MIMode": "pdb"
             }

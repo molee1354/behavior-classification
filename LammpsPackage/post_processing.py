@@ -497,7 +497,7 @@ class Visualizer:
         ax6.set_ylabel("X-pos")
         ax6.legend()
 
-        plt.savefig(f"{path}\\path_{package.iteration}.{format}", format = format)
+        plt.savefig(f"{path}/path_{package.iteration}.{format}", format = format)
         plt.close()
 
         

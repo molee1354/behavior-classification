@@ -2,33 +2,35 @@ import os
 import sys
 import json
 import logging
-import numpy as np
+# import numpy as np
 from time import perf_counter
 
 from LammpsPackage.post_processing import Comparer, Visualizer
-from pathExtract import TASK_ID, TRIAL_ID
+import var
 #todo   Implement task ID and trial ID to differentiate between tasks and such
 
+# importing variables
 try:
     TASK_ID = sys.argv[1]
 except IndexError:
-    pass
+    TASK_ID = var.TASK_ID
+
 try:
     TRIAL_ID = sys.argv[2]
 except IndexError:
-    pass
+    TRIAL_ID = var.TRIAL_ID
 
 def main():
     # loading the json file with human decisions for comparison
-    # with open(f"behaviors\\human\\Human_Behavior_{TASK_ID}.json", 'r') as file:
+    # with open(f"behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
     #     humanDict = json.load(file)
 
     # try:
-    #     with open(f"behaviors\\human\\Human_Behavior_{TASK_ID}.json", 'r') as file:
+    #     with open(f"behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
     #         humanDict = json.load(file)
 
     # except FileNotFoundError:
-    #     wb_file = pxl.load_workbook(f"behaviors\\human\\{TASK_ID}_batchManager.xlsx") #only need relative path
+    #     wb_file = pxl.load_workbook(f"behaviors/human/{TASK_ID}_batchManager.xlsx") #only need relative path
     #     sheet = wb_file.active
     #     MAXROW = sheet.max_row
     #     humanDict = {}
@@ -39,20 +41,20 @@ def main():
     #         humanDict[iterations_H] = behavior_H
 
     # dictionary to hold the computer behavior classifications
-    compDict = {}
     # unmatching = []
 
     # vectors to loop angles -> velocities
-    # velocities = np.linspace(1.0, 7.0, 13)
-    velocities = np.round(np.linspace(0.4064,2.8446,13),4)
-    angles = np.linspace(20, 70, 11, dtype=int)
+    # velocities = np.round(np.linspace(0.4064,2.8446,13),4)
+    # angles = np.linspace(20, 70, 11, dtype=int)
     # velocities = [7.0]
     # angles = [25]
 
+    # initializing return 
+    compDict = {}
 
-    extractsPath =  f"data_Extracts\\data_Extract_{TASK_ID}_{TRIAL_ID}"
-    for angle in angles:
-        for path in [ f"{extractsPath}\\{p}" for p in os.listdir(extractsPath) if f"_A{angle}" in p ]:
+    extractsPath =  f"{var.extract_root}/data_Extract_{TASK_ID}_{TRIAL_ID}"
+    for angle in var.angles:
+        for path in [ f"{extractsPath}/{p}" for p in os.listdir(extractsPath) if f"_A{angle}" in p ]:
 
             #* creating an output object that holds the necessary data
             output = Comparer( path )
@@ -74,7 +76,7 @@ def main():
             #* plotting the output behavior and saving the figure
             plotter = Visualizer(comp_dec)
 
-            save_path = f"output_plots\\path_plots\\path_plots_{TASK_ID}_{TRIAL_ID}"
+            save_path = f"{var.output_root}/output_plots/path_plots/path_plots_{TASK_ID}_{TRIAL_ID}"
             os.makedirs(save_path, exist_ok=True)
             
             # plotting function
@@ -103,12 +105,14 @@ def main():
 
             behavior_str = f"Behavior : [{ comp_dec.behavior }]\tConfidence: [{comp_dec.confidence}]"
 
+            logs_savepath = f"{var.output_root}/output_logs"
+            os.makedirs(logs_savepath, exist_ok=True)
             logging.basicConfig( 
                 level = logging.INFO, 
                 format = "  %(message)s", 
 
                 # outputting to both a log file and the stdout 
-                handlers = [logging.FileHandler(f"output_logs\\extract_{TASK_ID}_{TRIAL_ID}.log"), logging.StreamHandler(sys.stdout)]
+                handlers = [logging.FileHandler(f"{logs_savepath}/extract_{TASK_ID}_{TRIAL_ID}.log"), logging.StreamHandler(sys.stdout)]
             ) 
             logging.info(f"\n Iteration: {comp_dec.iteration}\t{behavior_str}") 
             # printing the reasons line by line 
@@ -122,12 +126,14 @@ def main():
     # logging.info(f"{len(unmatching)} unmatching parameters: {unmatching}")    
 
     # printing the outputs as a table
-    logging.info("\n%10s%10s" %("iter", "behavior"))
+    # logging.info("\n%10s%10s" %("iter", "behavior"))
     # for key in unmatching:        
     #     logging.info("%10s%10s" %(key, compDict[key]["behavior"]))
     
     # saving the computer behavior classifications    
-    with open(f"behaviors\\computer\\Computer_Behavior_{TASK_ID}_{TRIAL_ID}.json",'w') as file:        
+    behavior_savepath = f"{var.output_root}/behaviors/computer"
+    os.makedirs(behavior_savepath, exist_ok=True)
+    with open(f"{behavior_savepath}/Computer_Behavior_{TASK_ID}_{TRIAL_ID}.json",'w') as file:        
         json.dump(compDict, file, indent=4)
         
 if __name__ == "__main__":    
