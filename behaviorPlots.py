@@ -126,13 +126,11 @@ def main():
 
     fig, (
         ax1,ax2
-            ) = plt.subplots(1,2, figsize=(10,9.5), sharey=False)
+            ) = plt.subplots(1,2, figsize=(13,6), sharey=False)
     fig.suptitle(f"{TASK_ID} Behavior Comparison", 
         fontweight = "bold",
         fontsize = 16,
-
     )
-
 
     #colormap parameters
     myColors = (

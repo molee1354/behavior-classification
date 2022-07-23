@@ -6,16 +6,18 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from pathExtract import TASK_ID, TRIAL_ID
+import var
 
+# importing variables
 try:
     TASK_ID = sys.argv[1]
 except IndexError:
-    pass
+    TASK_ID = var.TASK_ID
+
 try:
     TRIAL_ID = sys.argv[2]
 except IndexError:
-    pass
+    TRIAL_ID = var.TRIAL_ID
 
 # setting data to plot as a command line argument
 try:
@@ -48,7 +50,7 @@ def processHuman(data_dict: dict) -> list[list[int]]:
     # this way the data type of the computer output can be anything other than "str"
     
     behaviorsList = []
-    for angle in np.linspace(20, 70, 11, dtype=int):
+    for angle in var.angles:
         behaviorList_I = []
         # for velocity in np.linspace(1.0, 7.0, 13):
         for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
@@ -76,17 +78,17 @@ def processData(input_dict: dict, parameter: str) -> list[list[int]]:
     """
 
     return [
-        [input_dict[key][parameter] for key in [k for k in input_dict.keys() if f"_A{angle}" in k] ] for angle in np.linspace(20, 70, 11, dtype=int)
+        [input_dict[key][parameter] for key in [k for k in input_dict.keys() if f"_A{angle}" in k] ] for angle in var.angles
     ]
 
 def main():
 
     # loading the data in a dictionary
-    with open(f"behaviors\\computer\\Computer_Behavior_{TASK_ID}_{TRIAL_ID}.json", 'r') as file:
+    with open(f"{var.output_root}/behaviors/computer/Computer_Behavior_{TASK_ID}_{TRIAL_ID}.json", 'r') as file:
         compDict = json.load(file)
 
     #! temp human behavior open
-    # with open(f"behaviors\\human\\Human_Behavior_{TASK_ID}.json", 'r') as file:
+    # with open(f"behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
     #     humanDict = json.load(file)
 
     # humanData = processHuman(humanDict)
@@ -127,7 +129,7 @@ def main():
     print(f"RCs: min/max = {min(rcs)}/{max(rcs)}\tmean/median = {mean(rcs):.2f}/{(median(rcs))}")
 
     #* plotting
-    fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(10,9))
+    fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(17,6))
     fig.suptitle(f"{TASK_ID} Quantities Comparison", fontsize = 16, fontweight = "bold")
 
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angles
