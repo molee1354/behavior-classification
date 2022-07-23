@@ -140,13 +140,14 @@ class Comparer:
 
         self.dataDict['disc_ax'] = acc_xs
         
+        # determining the airborne length
+        #TODO airborne length is not consistent...
         length = 0
         length_array = []
-
         for idx, (acc,vel) in enumerate(zip(acc_xs, vel_xs)):
             
             #ignoring cases where the velocity is effectively zero
-            if idx == 0 or ( ( -1e-06 < vel < 1e-06 ) or (vel_xs[0]*0.97 < vel < vel_xs[0]*1.03) ):
+            if idx == 0 or ( (-1e-06 < vel < 1e-06) or (vel_xs[0]*0.97 < vel < vel_xs[0]*1.03) ):
                 continue
             
             #for cases where acceleration is effectively zero

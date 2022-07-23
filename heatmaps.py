@@ -154,15 +154,16 @@ def main():
         ax = ax1,
         data = datas[PLOT_DATA],
         yticklabels = y_axis, 
+        # xticklabels = x_axis,
         linewidths = 2, 
         cmap = "Blues",
         annot = np.array(datas['behavior']), 
         fmt = ""
 
     )
+    ax1.set_xticklabels(x_axis, rotation = 45)
     ax1.invert_yaxis()
     # TODO some fixedlocator number not matching right here...
-    ax1.set_xticklabels(x_axis, rotation = 45)
     ax1.set_xlabel("Velocities")
     ax1.set_ylabel("Angles")
     colorabar1 = ax1.collections[0].colorbar
@@ -177,8 +178,8 @@ def main():
         cmap = "Blues", 
         annot = True
     )
-    ax2.invert_yaxis()
     ax2.set_xticklabels(x_axis, rotation = 45)
+    ax2.invert_yaxis()
     ax2.set_xlabel("Velocities")
     ax2.set_ylabel("Angles")
     colorbar4 = ax2.collections[0].colorbar
@@ -193,8 +194,8 @@ def main():
         cmap=colors,
         vmax=2, vmin=0
     )
-    ax3.invert_yaxis()
     ax3.set_xticklabels(x_axis, rotation=45)
+    ax3.invert_yaxis()
     ax3.set_xlabel("Velocities")
     ax3.set_ylabel("Angles")
     ax3.margins(1)
