@@ -4,7 +4,7 @@ import json
 import numpy as np
 import concurrent.futures # running multiple extractions at once
 
-from pathlib import Path
+# from pathlib import Path
 from time import perf_counter
 from statistics import median
 from operator import itemgetter
@@ -179,7 +179,7 @@ def get_path(filetype: str, angle: str) -> list[str]:
     Function to get the filepaths for the angles
     """
 
-    base = Path(os.getcwd()).parent.absolute() #* getting the parent directory
+    # base = Path(os.getcwd()).parent.absolute() #* getting the parent directory
 
     all_files = os.listdir( var.raw_root )
 
@@ -198,7 +198,6 @@ def extract_to_json(bed_filepath: str, disc_filepath: str):
 
     #todo   Write in values for keys ['num_timesteps'] and ['disc_r'] maybe for compatibility at the end of dict
 
-    os.makedirs(var.extract_root, exist_ok=True)
     os.makedirs(f"{var.extract_root}/data_Extract_{TASK_ID}_{TRIAL_ID}", exist_ok=True)
     with open(f"{var.extract_root}/data_Extract_{TASK_ID}_{TRIAL_ID}/outputs_{bed_filepath[-11:]}.json", 'w') as file:
         json.dump(outDict, file, indent=4)
