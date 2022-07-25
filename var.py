@@ -14,4 +14,6 @@ TRIAL_ID = "extract_3"
 
 angles = np.linspace(20, 70, 11, dtype=int)
 
-
+# for writing .sbatch outputs
+py_cmd = "python3 pathExtract_p.py"
+parallel = 4
