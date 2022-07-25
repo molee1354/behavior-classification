@@ -7,21 +7,24 @@ import bed_analysis
 
 # setting the command line arguments
 from pathExtract import TASK_ID, get_points, get_path
+import var
 
 try:
     TASK_ID = sys.argv[1]
 except IndexError:
-    pass
+    TASK_ID = var.TASK_ID
 
 # angle and velocity
 try:
     angle = int(sys.argv[2])
 except IndexError:
     angle = 20
+
 try:
     velocity = float(sys.argv[3])
 except IndexError:
     velocity = 2.4382
+
 try:
     timestep = int(sys.argv[4])
 except IndexError:
@@ -75,8 +78,8 @@ def plotter(time_rel: int) -> None:
             discDatas['disc_rs']
         )
     )
-    
 
+    # setting up the particle bed at a specific time
     particle_bed = Bed.get_bed(*time, reduc_idx)
     
     #* Plotting

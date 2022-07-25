@@ -13,6 +13,7 @@ class RegFile:
     DATA_OFFSET = 8
 
     # this changes according to the disc id
+    #! this should be set externally
     __DISC_ID = 108742
 
     def __init__(self, filename: str) -> None:

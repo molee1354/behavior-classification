@@ -19,7 +19,7 @@ class Comparer:
             
             class _DecisionPackage:
                 computer_decision: str
-                human_decision: str
+                human_decision: str     <-- No human decision in this version!
                 decisionDict: dict
                 airborne: int
                 switches: int
@@ -70,7 +70,7 @@ class Comparer:
         # return { k: v[parameter] for k,v in self.dataDict.items() }
         return 1
     
-    def determine_behavior_comp(self):
+    def determine_behavior_comp(self): #-> returns _DecisionPackage object that contains data
         """
         Method to determine the impact behavior from the input file"""
         
