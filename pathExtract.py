@@ -184,9 +184,9 @@ def get_path(filetype: str, angle: str) -> list[str]:
     all_files = os.listdir( var.raw_root )
 
     if filetype == "bed":
-        return [ f"{var.raw_root}/{i}" for i in all_files if all( [ (j in i) for j in [TASK_ID,"dmp.reg",str(angle)] ] ) ]
+        return [ f"{var.raw_root}/{i}" for i in all_files if all( [ (j in i) for j in [var.TASK_ID,"dmp.reg",str(angle)] ] ) ]
     elif filetype == "disc":
-        return [ f"{var.raw_root}/{i}" for i in all_files if all( [ (j in i) for j in [TASK_ID,"dmp.disc",str(angle)] ] ) ]
+        return [ f"{var.raw_root}/{i}" for i in all_files if all( [ (j in i) for j in [var.TASK_ID,"dmp.disc",str(angle)] ] ) ]
 
     else:
         raise Exception(f"The input parameter \"{filetype}\" is invalid")
@@ -198,8 +198,8 @@ def extract_to_json(bed_filepath: str, disc_filepath: str):
 
     #todo   Write in values for keys ['num_timesteps'] and ['disc_r'] maybe for compatibility at the end of dict
 
-    os.makedirs(f"{var.extract_root}/data_Extract_{TASK_ID}_{TRIAL_ID}", exist_ok=True)
-    with open(f"{var.extract_root}/data_Extract_{TASK_ID}_{TRIAL_ID}/outputs_{bed_filepath[-11:]}.json", 'w') as file:
+    os.makedirs(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}", exist_ok=True)
+    with open(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}/outputs_{bed_filepath[-11:]}.json", 'w') as file:
         json.dump(outDict, file, indent=4)
 
     # return bed_filepath[-8:]
