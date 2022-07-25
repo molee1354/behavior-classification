@@ -11,3 +11,4 @@ output_plots/
 
 # specific files
 var.py
+logfile.txt
