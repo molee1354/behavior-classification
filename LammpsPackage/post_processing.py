@@ -317,6 +317,12 @@ class Comparer:
         interm = list(decisionDict.values())
         interm.remove(0)         
 
+        # addressing zero division
+        try:
+            confidence=round( (abs(interm[0]-interm[1])/max(interm) ), 2 ),
+        except ZeroDivisionError:
+            confidence = 0
+
         return _DecisionPackage(
 
             #TODO review how the filename for this works
@@ -325,7 +331,7 @@ class Comparer:
             behavior=behavior,
 
             # computing confidence
-            confidence=round( (abs(interm[0]-interm[1])/max(interm) ), 2 ),
+            confidence=confidence,
 
             #todo   The problem with this is that this yields values of 100% that seem unreasonable
             #todo       - try changing it so that it is something like-->(current votes)/(total possible votes)
