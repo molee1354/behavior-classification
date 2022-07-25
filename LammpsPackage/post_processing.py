@@ -147,7 +147,7 @@ class Comparer:
         for idx, (acc,vel) in enumerate(zip(acc_xs, vel_xs)):
             
             #ignoring cases where the velocity is effectively zero
-            if idx == 0 or ( (-1e-06 < vel < 1e-06) or (vel_xs[0]*0.97 < vel < vel_xs[0]*1.03) ):
+            if idx == 0 or ( (-1e-05 < vel < 1e-05) or (vel_xs[0]*0.97 < vel < vel_xs[0]*1.03) ):
                 continue
             
             #for cases where acceleration is effectively zero

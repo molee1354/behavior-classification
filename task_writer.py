@@ -31,6 +31,9 @@ def main():
                 "#SBATCH --mem-per-cpu=200M\n",
                 "echo Running on $SLURM_JOB_NODELIST\n",
                 "module load python3/3.10.5b\n",
+                "python3 -m venv venv\n"
+                "source venv/bin/activate\n"
+                "pip install numpy\n"
                 "unset SLURM_GTIDS\n",
             ] )
             file.writelines(commands[key])

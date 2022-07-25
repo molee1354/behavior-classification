@@ -219,8 +219,15 @@ class DiscFile(RegFile):
             v_magnitude = (dataDict[time[1]]['disc_vx']**2 + dataDict[time[1]]['disc_vy']**2)**(0.5)
             stopped_for = 0
             
-            # bouncing off the wall
+            # cut time if disc returns to (almost) its original position -> periodic bound
+            # --> original position - 10% of the box width
+            # if  dataDict[ next( iter(dataDict.keys()) ) ]['disc_xs']-self.box_width*0.1 =< dataDict[time[1]]['disc_xs']:
+            if dataDict[ next( iter(dataDict.keys()) ) ]['disc_xs']-self.box_width*0.15 <= dataDict[time[1]]['disc_xs'] <= dataDict[ next( iter(dataDict.keys()) ) ]['disc_xs']-self.box_width*0.1:
+                return dataDict
+
+
             #* this mostly seems to cut off the simulation
+            # if velocity becomes inverse
             if dataDict[time[1]]['disc_vx'] < 0:
                 return dataDict
 
@@ -231,8 +238,8 @@ class DiscFile(RegFile):
                     return dataDict
 
             # stopping if disc is very close to the wall
-            if (dataDict[time[1]]['disc_xs'] + dataDict[time[1]]['disc_rs']) > 0.98*self.box_width:
-                return dataDict
+            # if (dataDict[time[1]]['disc_xs'] + dataDict[time[1]]['disc_rs']) > 0.98*self.box_width:
+            #     return dataDict
 
         return dataDict
 
