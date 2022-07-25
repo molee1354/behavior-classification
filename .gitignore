@@ -6,6 +6,5 @@ output_logs/
 output_plots/
 
 # filetypes
-*.txt
 *.pyc
 *.sbatch
