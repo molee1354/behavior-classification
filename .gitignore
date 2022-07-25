@@ -8,3 +8,7 @@ output_plots/
 # filetypes
 *.pyc
 *.sbatch
+
+# specific files
+var.py
+logfile.txt
