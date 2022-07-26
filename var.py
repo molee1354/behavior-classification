@@ -10,7 +10,7 @@ output_root = "/run/media/moosung/77FF-A557/outputs"
 
 # task/trial id
 TASK_ID = "Moon_1x"
-TRIAL_ID = "extract_test"
+TRIAL_ID = "extract_3"
 
 angles = np.linspace(20, 70, 11, dtype=int)
 

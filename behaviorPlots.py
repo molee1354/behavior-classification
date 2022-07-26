@@ -30,31 +30,37 @@ def processData(data_dict: dict) -> tuple[list[int],list[float]]:
     """
     
     # for the normal dictionary 
-    # if type(next(iter(data_dict.values()))) == str: 
-    #     # this way the data type of the computer output can be anything other than "str"
-    #     behaviorsList = []
-    #     for angle in np.linspace(20, 70, 11, dtype=int):
-    #         behaviorList_I = []
-    #         # for velocity in np.linspace(1.0, 7.0, 13):
-    #         for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
+    if type(next(iter(data_dict.values()))) == str: 
+        # this way the data type of the computer output can be anything other than "str"
+        behaviorsList = []
+        confidenceList = []
+        for angle in var.angles:
+            behaviorList_I = []
+            confidenceList_I = []
+            # for velocity in np.linspace(1.0, 7.0, 13):
+            for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
 
-    #             if data_dict[key][0] == "FS":
-    #                 behaviorList_I.append(0)
-    #             if data_dict[key][0] == "RO":
-    #                 behaviorList_I.append(1)
-    #             if data_dict[key][0] == "RC":
-    #                 behaviorList_I.append(2)
+                # making a placeholder confidence list
+                confidenceList_I.append(0.7)
 
-    #         behaviorsList.append(behaviorList_I)
+                if data_dict[key] == "FS":
+                    behaviorList_I.append(0)
+                if data_dict[key] == "RO":
+                    behaviorList_I.append(1)
+                if data_dict[key] == "RC":
+                    behaviorList_I.append(2)
 
-    #     return behaviorsList
+            behaviorsList.append(behaviorList_I)
+            confidenceList.append(confidenceList_I)
+
+        return behaviorsList,confidenceList
     
     # extracting the confidence values 
     #todo the loaded data is now a key-value thing so the indexing should change
     # else:
     behaviorsList = []
     confidenceList = []
-    for angle in np.linspace(20, 70, 11, dtype=int):
+    for angle in var.angles:
         # initializing each row 
         behaviorList_I = []
         confidenceList_I = []
@@ -87,8 +93,8 @@ def main():
 
     # the human dictionary is probably not sorted
     # try:
-    #     with open(f"behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
-    #         humanDict = json.load(file)
+    with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
+        humanDict = json.load(file)
     
     # if there is no json file to refer to, go to the old xlsx file
     # except FileNotFoundError:
@@ -116,7 +122,7 @@ def main():
 
     #calling the function on the dictionaries
     # humanBehavior = np.array(processData(humanDict))
-    comp_decision = processData(compDict)
+    comp_decision = processData(humanDict)
     
     compBehavior = np.array(comp_decision[0])
     confidence = np.array(comp_decision[1])

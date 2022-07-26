@@ -4,7 +4,7 @@
             "adapter": "debugpy",
             "configuration": {
                 "request": "launch",
-                "program": "task_writer.py",
+                "program": "behaviorPlots.py",
                 "cwd": "~/projects/Research/Granular/behavior-classification",
                 "externalConsole": true,
                 "MIMode": "pdb"
