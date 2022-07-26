@@ -4,10 +4,13 @@ data_Extracts/
 behaviors/
 output_logs/
 output_plots/
+outputs/
+venv/
 
 # filetypes
 *.pyc
 *.sbatch
+*.log
 
 # specific files
 var.py

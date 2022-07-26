@@ -147,7 +147,7 @@ class Comparer:
         for idx, (acc,vel) in enumerate(zip(acc_xs, vel_xs)):
             
             #ignoring cases where the velocity is effectively zero
-            if idx == 0 or ( (-1e-06 < vel < 1e-06) or (vel_xs[0]*0.97 < vel < vel_xs[0]*1.03) ):
+            if idx == 0 or ( (-1e-05 < vel < 1e-05) or (vel_xs[0]*0.97 < vel < vel_xs[0]*1.03) ):
                 continue
             
             #for cases where acceleration is effectively zero
@@ -317,6 +317,12 @@ class Comparer:
         interm = list(decisionDict.values())
         interm.remove(0)         
 
+        # addressing zero division
+        try:
+            confidence=round( (abs(interm[0]-interm[1])/max(interm) ), 2 ),
+        except ZeroDivisionError:
+            confidence = 0
+
         return _DecisionPackage(
 
             #TODO review how the filename for this works
@@ -325,7 +331,7 @@ class Comparer:
             behavior=behavior,
 
             # computing confidence
-            confidence=round( (abs(interm[0]-interm[1])/max(interm) ), 2 ),
+            confidence=confidence,
 
             #todo   The problem with this is that this yields values of 100% that seem unreasonable
             #todo       - try changing it so that it is something like-->(current votes)/(total possible votes)
