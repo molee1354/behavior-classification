@@ -13,5 +13,5 @@ venv/
 *.log
 
 # specific files
-var.py
+./var.py
 logfile.txt

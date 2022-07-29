@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -f extract_*
+rm -rf __pycache__
