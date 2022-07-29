@@ -319,7 +319,7 @@ class Comparer:
 
         # addressing zero division
         try:
-            confidence=round( (abs(interm[0]-interm[1])/max(interm) ), 2 ),
+            confidence=round( (abs(interm[0]-interm[1])/max(interm) ), 2 )
         except ZeroDivisionError:
             confidence = 0
 
