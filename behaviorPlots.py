@@ -122,7 +122,7 @@ def main():
 
     #calling the function on the dictionaries
     # humanBehavior = np.array(processData(humanDict))
-    comp_decision = processData(humanDict)
+    comp_decision = processData(compDict)
     
     compBehavior = np.array(comp_decision[0])
     confidence = np.array(comp_decision[1])

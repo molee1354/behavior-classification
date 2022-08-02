@@ -2,11 +2,12 @@
 import numpy as np
 
 # where the necessary data is stored
-extract_root = "E:/mokin/behavior_classification/data_Extracts"
-raw_root = "E:/mokin/moon_raw"
+extract_root = "/run/media/moosung/77FF-A557/data/data_Extracts"
+raw_root = "/run/media/moosung/77FF-A557/data/moon_raw"
 
 # where the outputs should go
-output_root = "E:/mokin/behavior_classification/outputs"
+output_root = "/run/media/moosung/77FF-A557/outputs/"
+
 
 # task/trial id
 TASK_ID = "Moon_1x"
