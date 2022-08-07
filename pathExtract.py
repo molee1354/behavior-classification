@@ -4,26 +4,19 @@ import json
 import numpy as np
 import concurrent.futures # running multiple extractions at once
 
-# from pathlib import Path
 from time import perf_counter
 from statistics import median
 from operator import itemgetter
 
+# local packages
 from LammpsPackage.bed_analysis import RegFile, DiscFile
 import var
 
-# TASK_ID = "Moon_1x"
-try:
-    TASK_ID = sys.argv[1]
-except IndexError:
-    TASK_ID = var.TASK_ID
+# importing task variables
+TASK_ID = var.TASK_ID
+TRIAL_ID = var.TRIAL_ID
 
-
-# TRIAL_ID = "extract_3"
-try:
-    TRIAL_ID = sys.argv[2]
-except IndexError:
-    TRIAL_ID = var.TRIAL_ID
+TEST_FLAG = sys.argv
 
 def get_points(
     time: tuple[int, int],
@@ -202,35 +195,50 @@ def extract_to_json(bed_filepath: str, disc_filepath: str):
     with open(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}/outputs_{bed_filepath[-11:]}.json", 'w') as file:
         json.dump(outDict, file, indent=4)
 
-    # return bed_filepath[-8:]
+def extract_to_json_test(bed_filepath: str, disc_filepath:str)-> None:
+    outDict = get_data_dict( bed_filepath,disc_filepath )
+
+    dest_dir = f"{var.extract_root}/data_Extract_TEST_{var.TASK_ID}_{var.TRIAL_ID}"
+    os.makedirs(dest_dir, exist_ok=True)
+
+    # saving the data
+    with open(f"{dest_dir}/outputs_{bed_filepath[-11:]}.json", 'w') as file:
+        json.dump(outDict, file, indent=4)
+
+    print(
+        f"Test file \"{dest_dir}/outputs_{bed_filepath[-11:]}.json\" successfully written!"
+    )
+
 
 def main():
     #* loop over angles and such here 
-
-    # vectors to loop angles -> velocities
-    # velocities = np.round(np.linspace(0.4064,2.8446,13),4)
-    # angles = np.linspace(20, 70, 11, dtype=int)
-
-    # v = 0.8127
-    # a = 20
-    # extract_to_json(f"E:/mokin/moon_raw/dmp.reg.Moon_1x_V{v}_A{a}", 
-    #                 f"E:/mokin/moon_raw/dmp.disc.Moon_1x_V{v}_A{a}")
     
-    for angle in var.angles:
-        beds = []
-        discs = []
-        # for velocity in [f"{vel:6.4f}" for vel in velocities]:
-        beds =  get_path("bed", f"_A{angle}") 
-        discs = get_path("disc", f"_A{angle}")
+    if "-test" not in TEST_FLAG:
+        for angle in var.angles:
+            beds = []
+            discs = []
+            # for velocity in [f"{vel:6.4f}" for vel in velocities]:
+            beds =  get_path("bed", f"_A{angle}") 
+            discs = get_path("disc", f"_A{angle}")
 
-        # debug print
-        # for idx,(bed,disc) in enumerate(zip(beds,discs)):
-        #     print(f"{idx:2d} -> {bed} | {disc}")
-        # print("")
+            # debug print
+            # for idx,(bed,disc) in enumerate(zip(beds,discs)):
+            #     print(f"{idx:2d} -> {bed} | {disc}")
+            # print("")
 
-        # using multiple processors
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            executor.map(extract_to_json, beds, discs)
+            # using multiple processors
+            with concurrent.futures.ProcessPoolExecutor() as executor:
+                executor.map(extract_to_json, beds, discs)
+
+    # testing for single v and a happens if test flag exists
+    else: 
+        angle = TEST_FLAG[TEST_FLAG.index("-test")+1]
+        velocity = TEST_FLAG[TEST_FLAG.index("-test")+2]
+
+        bed = [b for b in get_path("bed", f"_A{angle}") if str(velocity) in b]
+        disc = [d for d in get_path("disc", f"_A{angle}") if str(velocity) in d]
+
+        extract_to_json_test( bed[0],disc[0] )
 
 
 if __name__ == "__main__":

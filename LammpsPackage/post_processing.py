@@ -243,6 +243,7 @@ class Comparer:
         #* analyzing the airborne case
         try:
             length = max(length_array)
+            reasons.append(f"{list(decisionDict.values())} : length = {length} from {length_array}")
         
         # this usually doesn't happen very often, if ever
         except ValueError:

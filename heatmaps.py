@@ -9,19 +9,12 @@ from matplotlib.colors import LinearSegmentedColormap
 import var
 
 # importing variables
-try:
-    TASK_ID = sys.argv[1]
-except IndexError:
-    TASK_ID = var.TASK_ID
-
-try:
-    TRIAL_ID = sys.argv[2]
-except IndexError:
-    TRIAL_ID = var.TRIAL_ID
+TASK_ID = var.TASK_ID
+TRIAL_ID = var.TRIAL_ID
 
 # setting data to plot as a command line argument
 try:
-    PLOT_DATA = sys.argv[3]
+    PLOT_DATA = sys.argv[1]
 except IndexError:
     PLOT_DATA = "contact_pIDs"
 
@@ -123,14 +116,14 @@ def main():
                 rcs.append(datas["contact_pIDs"][i][j])
 
     # examining the maximum and minimum values
-    print(f"[{TASK_ID}] - Unique Disc Contact Particles")
+    print(f"[{TASK_ID} : {TRIAL_ID}] - Quantity : {PLOT_DATA}")
     print(f"FSs: min/max = {min(fss)}/{max(fss)}\tmean/median = {mean(fss):.2f}/{(median(fss))}")
     print(f"ROs: min/max = {min(ros)}/{max(ros)}\tmean/median = {mean(ros):.2f}/{(median(ros))}")
     print(f"RCs: min/max = {min(rcs)}/{max(rcs)}\tmean/median = {mean(rcs):.2f}/{(median(rcs))}")
 
     #* plotting
     fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(17,6))
-    fig.suptitle(f"{TASK_ID} Quantities Comparison", fontsize = 16, fontweight = "bold")
+    fig.suptitle(f"{TASK_ID} Quantities Comparison : {PLOT_DATA}", fontsize = 16, fontweight = "bold")
 
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angles
     x_axis = list(np.round(np.linspace(0.4064,2.8446,13),4))
