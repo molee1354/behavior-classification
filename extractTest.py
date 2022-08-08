@@ -142,7 +142,7 @@ if __name__ == "__main__":
     end = perf_counter()    
 
     # showing the behavior plot
-    import behaviorPlots
-    behaviorPlots.main()
+    # import behaviorPlots
+    # behaviorPlots.main()
 
     print(f"Total runtime: { int( (end-start)//60 ) }:{(end-start)%60 : .2f}")

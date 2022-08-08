@@ -4,7 +4,7 @@
             "adapter": "debugpy",
             "configuration": {
                 "request": "launch",
-                "program": "heatmaps.py",
+                "program": "extractTest.py",
                 "cwd": "~/projects/Research/Granular/behavior-classification",
                 "externalConsole": true,
                 "MIMode": "pdb"

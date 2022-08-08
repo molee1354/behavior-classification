@@ -93,8 +93,8 @@ def main():
 
     # the human dictionary is probably not sorted
     # try:
-    with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
-        humanDict = json.load(file)
+    # with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
+    #     humanDict = json.load(file)
     
     # if there is no json file to refer to, go to the old xlsx file
     # except FileNotFoundError:
