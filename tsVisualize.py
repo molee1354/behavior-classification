@@ -3,7 +3,7 @@ import sys
 import numpy as np
 from matplotlib.widgets import TextBox
 from matplotlib import pyplot as plt
-import bed_analysis
+import LammpsPackage.bed_analysis
 
 # setting the command line arguments
 from pathExtract import TASK_ID, get_points, get_path
