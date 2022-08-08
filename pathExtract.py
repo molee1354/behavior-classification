@@ -119,7 +119,7 @@ def get_data_dict(bed_filepath: str, disc_filepath: str) -> dict:
 
     #todo   Add a breaking condition here. This should be something that is retrieved from the disc file
     for idx,time in enumerate(reduced_ts):
-        print(f"Iteration {bed_filepath[-11:]}\tTimestep: {time[1]}", end = "")
+        print(f"Iteration {bed_filepath[-8:]}\tTimestep: {time[1]}", end = "")
 
         (outDict['crater_xs'][idx], outDict['crater_ys'][idx]), (outDict['mound_xs'][idx], outDict['mound_ys'][idx]), touch_IDs = get_points(
             # args for get_points()
@@ -192,7 +192,7 @@ def extract_to_json(bed_filepath: str, disc_filepath: str):
     #todo   Write in values for keys ['num_timesteps'] and ['disc_r'] maybe for compatibility at the end of dict
 
     os.makedirs(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}", exist_ok=True)
-    with open(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}/outputs_{bed_filepath[-11:]}.json", 'w') as file:
+    with open(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}/outputs_{bed_filepath[-8:]}.json", 'w') as file:
         json.dump(outDict, file, indent=4)
 
 def extract_to_json_test(bed_filepath: str, disc_filepath:str)-> None:
@@ -202,11 +202,11 @@ def extract_to_json_test(bed_filepath: str, disc_filepath:str)-> None:
     os.makedirs(dest_dir, exist_ok=True)
 
     # saving the data
-    with open(f"{dest_dir}/outputs_{bed_filepath[-11:]}.json", 'w') as file:
+    with open(f"{dest_dir}/outputs_{bed_filepath[-8:]}.json", 'w') as file:
         json.dump(outDict, file, indent=4)
 
     print(
-        f"Test file \"{dest_dir}/outputs_{bed_filepath[-11:]}.json\" successfully written!"
+        f"Test file \"{dest_dir}/outputs_{bed_filepath[-8:]}.json\" successfully written!"
     )
 
 
