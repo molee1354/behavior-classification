@@ -16,3 +16,4 @@ venv/
 ./var.py
 logfile.txt
 notes.txt
+LammpsPackage/sample.py
