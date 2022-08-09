@@ -1,3 +1,4 @@
 #!/bin/bash
 rm -f extract_*
 rm -rf __pycache__
+rm -rf Lammps/__pycache__
