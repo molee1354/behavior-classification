@@ -116,7 +116,8 @@ def main():
 
     #extracting x and y axes from the humanDict dictionary
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angle
-    x_axis = list(np.round(np.linspace(0.4064,2.8446,13),4))
+    # x_axis = list(np.round(np.linspace(0.4064,2.8446,13),4))
+    x_axis = list(np.round(np.linspace(1.0,7.0,13),1))
     
     # total_iter = len(x_axis)*len(y_axis)
 

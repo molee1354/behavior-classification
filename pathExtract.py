@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import json
 import numpy as np
@@ -149,6 +150,8 @@ def get_data_dict(bed_filepath: str, disc_filepath: str) -> dict:
         )
     
     outDict['contact_pIDs'] = list(particles_touched)
+    outDict["box_width"] = pBed.box_width
+    outDict["box_height"] = pBed.box_height
 
     return outDict
 
@@ -162,7 +165,7 @@ def get_disc_paths(filepath: str):
     disc = DiscFile(filepath)
 
     end = perf_counter()
-    print(f"Accessed disc data for {filepath[-8:]} in {end-start: .2f} seconds")
+    # print(f"Accessed disc data for {re.findall('V[0-9]+\.?[0-9]+_A[0-9]+',filepath)[0]} in {end-start: .2f} seconds")
     
     # getting the arrays from the keys from the first timestep
     return {key: disc.get_data(key, as_array=True) for key in disc.dataDict[disc.timestep0]}
@@ -191,8 +194,9 @@ def extract_to_json(bed_filepath: str, disc_filepath: str):
 
     #todo   Write in values for keys ['num_timesteps'] and ['disc_r'] maybe for compatibility at the end of dict
 
+    iteration = re.findall('V[0-9]+\.?[0-9]+_A[0-9]+',bed_filepath)[0]
     os.makedirs(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}", exist_ok=True)
-    with open(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}/outputs_{bed_filepath[-8:]}.json", 'w') as file:
+    with open(f"{var.extract_root}/data_Extract_{var.TASK_ID}_{var.TRIAL_ID}/outputs_{iteration}.json", 'w') as file:
         json.dump(outDict, file, indent=4)
 
 def extract_to_json_test(bed_filepath: str, disc_filepath:str)-> None:
@@ -202,11 +206,12 @@ def extract_to_json_test(bed_filepath: str, disc_filepath:str)-> None:
     os.makedirs(dest_dir, exist_ok=True)
 
     # saving the data
-    with open(f"{dest_dir}/outputs_{bed_filepath[-8:]}.json", 'w') as file:
+    iteration = re.findall('V[0-9]+\.?[0-9]+_A[0-9]+',bed_filepath)[0]
+    with open(f"{dest_dir}/outputs_{iteration}.json", 'w') as file:
         json.dump(outDict, file, indent=4)
 
     print(
-        f"Test file \"{dest_dir}/outputs_{bed_filepath[-8:]}.json\" successfully written!"
+        f"Test file \"{dest_dir}/outputs_{iteration}.json\" successfully written!"
     )
 
 

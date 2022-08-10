@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 import json
 from statistics import median
@@ -324,36 +325,42 @@ class Comparer:
         except ZeroDivisionError:
             confidence = 0
 
+        # adding in extra final-frame values
+        disc_final_x,disc_final_y = disc_xs[-1],disc_ys[-1]
+        mound_final_x,mound_final_y = mound_xs[-1],mound_ys[-1]
+        crater_final_x = crater_xs[-1] #-> crater_y is relatively unimportant
+        
+
         return _DecisionPackage(
 
             #TODO review how the filename for this works
-            iteration=self.filename[-16:-5],
+            iteration=re.findall( "V[0-9]+\.?[0-9]+_A[0-9]*",self.filename )[0],
             
             behavior=behavior,
 
             # computing confidence
             confidence=confidence,
 
-            #todo   The problem with this is that this yields values of 100% that seem unreasonable
-            #todo       - try changing it so that it is something like-->(current votes)/(total possible votes)
-
             #! human decision is not taken in here
             # human_decision=self.human_decision,
-
-            decisionDict=decisionDict,
 
             # conditional datas
             contact_pIDs=len(self.dataDict['contact_pIDs']),
             airborne=length,
             switches=len(switches),
+            crater_final=crater_final_x-disc_final_x,
+            mound_final=mound_final_x-disc_final_x,
+            disc_max_height=disc_final_y,
+            impact_time=impact_time,
+            num_timesteps=num_timesteps,
+
             surpasses=surpasses,
             crater_out=crater_out,
-            impact_time=impact_time,
-            reasons=reasons,
-            num_timesteps=num_timesteps,
 
             # do we really need this?
             datas=self.dataDict,
+            decisionDict=decisionDict,
+            reasons=reasons
         )
 
 
@@ -361,18 +368,28 @@ class Comparer:
 class _DecisionPackage:
     iteration: str
     behavior: str
-    confidence: float
     # human_decision: str
-    decisionDict: dict
+
+    confidence: float
+
+    # properties of the simulation
     contact_pIDs: int
     airborne: int
     switches: int
+
+    crater_final: float
+    mound_final: float
+    disc_max_height: float
+
+    num_timesteps: int
+    impact_time: int # not very reliable
+
     surpasses: bool
     crater_out: bool
-    impact_time: int
-    reasons: list[str]
-    num_timesteps: int
+
     datas: dict
+    decisionDict: dict
+    reasons: list[str]
 
 class Visualizer:
 

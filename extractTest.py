@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import json
 import logging
@@ -85,14 +86,19 @@ def main():
             #* saving the computer behavior
             #todo Export <<output.behavior_obj.decision>> this here
             #! comp_dec is a tuple --> (behavior, confidence)
-            compDict[path[-16:-5]] = {
-                 "behavior" : comp_dec.behavior,
-                 "confidence": comp_dec.confidence,
-                 "contact_pIDs": comp_dec.contact_pIDs,
-                 "airborne": comp_dec.airborne,
-                 "surpasses": comp_dec.surpasses,
-                 "crater_out": comp_dec.crater_out
-             }
+            compDict[re.findall( "V[0-9]+\.?[0-9]+_A[0-9]*",path )[0]] = {
+                "behavior" : comp_dec.behavior,
+                "confidence": comp_dec.confidence,
+                "contact_pIDs": comp_dec.contact_pIDs,
+                "airborne": comp_dec.airborne,
+                "surpasses": comp_dec.surpasses,
+                "crater_out": comp_dec.crater_out,
+
+                #TODO normalizing this can also be an option
+                "crater_final_x": comp_dec.crater_final, # final disc x position with respect to the final crater position
+                "mound_final_x": comp_dec.mound_final, # final disc x position with respect to the final mound position
+                "disc_final_y": comp_dec.disc_max_height # final disc height
+            }
 
             
             #* printing the behavior output
