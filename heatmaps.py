@@ -74,6 +74,7 @@ def processData(input_dict: dict, parameter: str) -> list[list[int]]:
         [input_dict[key][parameter] for key in [k for k in input_dict.keys() if f"_A{angle}" in k] ] for angle in var.angles
     ]
 
+
 def main():
 
     # loading the data in a dictionary

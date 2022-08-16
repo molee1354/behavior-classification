@@ -97,7 +97,9 @@ def main():
                 #TODO normalizing this can also be an option
                 "crater_final_x": comp_dec.crater_final, # final disc x position with respect to the final crater position
                 "mound_final_x": comp_dec.mound_final, # final disc x position with respect to the final mound position
-                "disc_final_y": comp_dec.disc_max_height # final disc height
+                "disc_final_x": comp_dec.disc_final_x,
+                "disc_final_y": comp_dec.disc_final_y, # final disc height
+                "disc_max_y": comp_dec.disc_max_y
             }
 
             

@@ -30,6 +30,9 @@ class Comparer:
                 reason: list[str]
                 datas: dict
                 num_timesteps: int
+                crater_final_x: float
+                mound_final_x: float
+                disc_final_y: float
 
     """
 
@@ -326,7 +329,7 @@ class Comparer:
             confidence = 0
 
         # adding in extra final-frame values
-        disc_final_x,disc_final_y = disc_xs[-1],disc_ys[-1]
+        disc_final_x,disc_final_y,disc_max_y = disc_xs[-1],disc_ys[-1],max(disc_ys)
         mound_final_x,mound_final_y = mound_xs[-1],mound_ys[-1]
         crater_final_x = crater_xs[-1] #-> crater_y is relatively unimportant
         
@@ -348,9 +351,11 @@ class Comparer:
             contact_pIDs=len(self.dataDict['contact_pIDs']),
             airborne=length,
             switches=len(switches),
-            crater_final=crater_final_x-disc_final_x,
-            mound_final=mound_final_x-disc_final_x,
-            disc_max_height=disc_final_y,
+            crater_final=crater_final_x,
+            mound_final=mound_final_x,
+            disc_final_x=disc_final_x,
+            disc_final_y=disc_final_y,
+            disc_max_y=disc_max_y,
             impact_time=impact_time,
             num_timesteps=num_timesteps,
 
@@ -379,7 +384,9 @@ class _DecisionPackage:
 
     crater_final: float
     mound_final: float
-    disc_max_height: float
+    disc_final_x: float
+    disc_final_y: float
+    disc_max_y: float
 
     num_timesteps: int
     impact_time: int # not very reliable
