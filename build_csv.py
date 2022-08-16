@@ -59,16 +59,12 @@ class Source:
         output_file = f"{self.path}/labels.csv"
         with open( output_file,'a' ) as file:
             file_writer = csv.writer( file,delimiter=',' )
-            
-            behavior_index = {
-                "FS" : [1,0,0],
-                "RO" : [0,1,0],
-                "RC" : [0,0,1]
-            }
 
             for value in self.input_dict.values():
                 file_writer.writerow([
-                    behavior_index[value["behavior"]]
+                    1 if value["behavior"] == "FS" else 0,
+                    1 if value["behavior"] == "RO" else 0,
+                    1 if value["behavior"] == "RC" else 0
                 ])
 
 
