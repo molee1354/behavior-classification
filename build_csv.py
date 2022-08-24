@@ -71,6 +71,7 @@ class Source:
 # converting the output behavior .json to .csv
 def main() -> None:
     
+    # write into the var.py file. All file operations are `appends`
     filepath = f"{var.output_root}/behaviors/computer/"  \
             f"Computer_Behavior_{var.TASK_ID}_{var.TRIAL_ID}.json"
 
@@ -78,6 +79,9 @@ def main() -> None:
     source.create_ids()
     source.create_features()
     source.create_labels()
+    
+    #TODO -> make duplication of specific classes possible such that
+        # training data may be relatively free of bias.:q
 
 
 if __name__ == "__main__":
