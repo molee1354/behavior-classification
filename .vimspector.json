@@ -4,7 +4,7 @@
             "adapter": "debugpy",
             "configuration": {
                 "request": "launch",
-                "program": "heatmaps.py",
+                "program": "normalize_csv.py",
                 "cwd": "~/projects/Research/Granular/behavior-classification",
                 "externalConsole": true,
                 "MIMode": "pdb"

@@ -14,7 +14,8 @@ class RegFile:
 
     # this changes according to the disc id
     #! this should be set externally
-    __DISC_ID = 108742
+    __DISC_ID = 9460
+    # __DISC_ID = 108742
 
     def __init__(self, filename: str) -> None:
         self.filename = filename
@@ -663,8 +664,6 @@ class P_Profile:
                 return 0
 
         return 1
-    
-
 
     #todo   The julia functions would go in here. The arrays would be passed in, and return values would be
     #todo   received in the form of arrays..?

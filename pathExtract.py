@@ -102,7 +102,7 @@ def get_data_dict(bed_filepath: str, disc_filepath: str) -> dict:
     #! resize the bed to minimize the looping times
     #! 1.4 --> 2.5 seconds
     #! 1.35 --> 3.0 seconds
-    reduced_idx = initBed.is_greater('y', 0.12)
+    reduced_idx = initBed.is_greater('y', 0.14)
 
     #* the timesteps for which the data is significant
     # ts_cutoff = pDisc.ts_cutoff

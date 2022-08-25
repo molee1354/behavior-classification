@@ -1,9 +1,11 @@
 import os
+import re
 import sys
 import json
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+# import openpyxl as pxl
 from matplotlib.colors import LinearSegmentedColormap
 
 import var
@@ -57,29 +59,29 @@ def processData(data_dict: dict) -> tuple[list[int],list[float]]:
     
     # extracting the confidence values 
     #todo the loaded data is now a key-value thing so the indexing should change
-    # else:
-    behaviorsList = []
-    confidenceList = []
-    for angle in var.angles:
-        # initializing each row 
-        behaviorList_I = []
-        confidenceList_I = []
-        for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
+    else:
+        behaviorsList = []
+        confidenceList = []
+        for angle in var.angles:
+            # initializing each row 
+            behaviorList_I = []
+            confidenceList_I = []
+            for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
 
-            # adding the confidence
-            confidenceList_I.append(data_dict[key]["confidence"])
+                # adding the confidence
+                confidenceList_I.append(data_dict[key]["confidence"])
 
-            if data_dict[key]["behavior"] == "FS":
-                behaviorList_I.append(0)
+                if data_dict[key]["behavior"] == "FS":
+                    behaviorList_I.append(0)
 
-            if data_dict[key]["behavior"] == "RO":
-                behaviorList_I.append(1)
-                
-            if data_dict[key]["behavior"] == "RC":
-                behaviorList_I.append(2)
+                if data_dict[key]["behavior"] == "RO":
+                    behaviorList_I.append(1)
+                    
+                if data_dict[key]["behavior"] == "RC":
+                    behaviorList_I.append(2)
 
-        behaviorsList.append(behaviorList_I)
-        confidenceList.append(confidenceList_I)
+            behaviorsList.append(behaviorList_I)
+            confidenceList.append(confidenceList_I)
 
     return behaviorsList, confidenceList 
     
@@ -92,37 +94,47 @@ def main():
         compDict = json.load(readC)
 
     # the human dictionary is probably not sorted
-    # try:
-    # with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
-    #     humanDict = json.load(file)
+    #try:
+    #    with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
+    #        humanDict_unsorted = json.load(file)
     
-    # if there is no json file to refer to, go to the old xlsx file
-    # except FileNotFoundError:
-    #     wb_file = pxl.load_workbook(f"behaviors/human/{TASK_ID}_batchManager.xlsx") #only need relative path
-    #     sheet = wb_file.active
-    #     MAXROW = sheet.max_row
-    #     humanDict = {}
-    #     for i in range(2, MAXROW+1):
-    #         iterations_H = sheet.cell(row = i, column = 1).value
-    #         behavior_H = sheet.cell(row = i, column = 4).value
+    ## if there is no json file to refer to, go to the old xlsx file
+    #except FileNotFoundError:
+    #    wb_file = pxl.load_workbook(f"behaviors/human/{TASK_ID}_batchManager.xlsx") #only need relative path
+    #    sheet = wb_file.active
+    #    MAXROW = sheet.max_row
+    #    humanDict_unsorted = {}
+    #    for i in range(2, MAXROW+1):
+    #        iterations_H = sheet.cell(row = i, column = 1).value
+    #        behavior_H = sheet.cell(row = i, column = 4).value
 
-    #         humanDict[iterations_H] = behavior_H
+    #        humanDict_unsorted[iterations_H] = behavior_H
     
-    #finding the unmatching keys
-    # unmatching = []
-    # for key in compDict:
-    #     if compDict[key]['behavior'] != humanDict[key]:
-    #         unmatching.append(key)
+    ##finding the unmatching keys
+    #unmatching = []
+    x_axis = []
+    for key in compDict:
+        v = re.findall("[0-9]+\.[0-9]*",key)[0]
+        if v not in x_axis:
+            x_axis.append(v)
+        # if compDict[key]['behavior'] != humanDict_unsorted[key]:
+    #        unmatching.append(key)
 
     #extracting x and y axes from the humanDict dictionary
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angle
     # x_axis = list(np.round(np.linspace(0.4064,2.8446,13),4))
     x_axis = list(np.round(np.linspace(1.0,7.0,13),1))
+
+    #* rearranging human behavior
+    # humanDict = {}
+    # for y in y_axis:
+    #     for x in x_axis:
+    #         humanDict[f"V{x}_A{y}"] = humanDict_unsorted[f"V{x}_A{y}"]
     
-    # total_iter = len(x_axis)*len(y_axis)
+    total_iter = len(x_axis)*len(y_axis)
 
     #calling the function on the dictionaries
-    # humanBehavior = np.array(processData(humanDict))
+    # humanBehavior = np.array(processData(humanDict))[0]
     comp_decision = processData(compDict)
     
     compBehavior = np.array(comp_decision[0])
@@ -191,44 +203,41 @@ def main():
     colorbar4 = ax2.collections[0].colorbar
     colorbar4.set_ticks(np.linspace(0,1,11)) 
 
-    # ax2.set_title("Human Plot")
-    # ax2 = sns.heatmap(
-    #     ax = ax2,
+    # ax3.set_title("Human Plot")
+    # ax3 = sns.heatmap(
+    #     ax = ax3,
     #     data = humanBehavior,
     #     yticklabels=y_axis,
     #     linewidths=2,
     #     cmap=colors,
     #     vmax=2, vmin=0
     # )
-    # ax2.invert_yaxis()
-    # ax2.set_xticklabels(x_axis, rotation=45)
-    # ax2.set_xlabel("Velocities")
-    # ax2.set_ylabel("Angles")
+    # ax3.invert_yaxis()
+    # ax3.set_xticklabels(x_axis, rotation=45)
+    # ax3.set_xlabel("Velocities")
+    # ax3.set_ylabel("Angles")
 
-    # colorbar2 = ax2.collections[0].colorbar
+    # colorbar2 = ax3.collections[0].colorbar
     # colorbar2.set_ticks([0.33,1.0,1.66])
     # colorbar2.set_ticklabels(["FS","RO","RC"])
 
-    # ax3.set_title("Unmatching")
-    # ax3 = sns.heatmap(
-    #     ax = ax3,
+    # ax4.set_title("Unmatching")
+    # ax4 = sns.heatmap(
+    #     ax = ax4,
     #     data = diffBehavior,
     #     yticklabels=y_axis,
     #     linewidths=2,
     #     cmap=colorsBW,
     #     # vmax=2, vmin=0
     # )
-    # ax3.invert_yaxis()
-    # ax3.set_xticklabels(x_axis, rotation=45)
-    # ax3.set_xlabel("Velocities")
-    # ax3.set_ylabel("Angles")
+    # ax4.invert_yaxis()
+    # ax4.set_xticklabels(x_axis, rotation=45)
+    # ax4.set_xlabel("Velocities")
+    # ax4.set_ylabel("Angles")
 
-    # colorbar3 = ax3.collections[0].colorbar
+    # colorbar3 = ax4.collections[0].colorbar
     # colorbar3.set_ticks([0.25, 0.75])
     # colorbar3.set_ticklabels(["Matching", "Unmatching"])
-    
-    
-    
 
     # outputText = f"Matching Rate: {(total_iter-len(unmatching))/total_iter:.3}\n{len(unmatching)} Unmatching parameters: {unmatching}"
     plt.subplots_adjust(
@@ -247,8 +256,7 @@ def main():
 
     plt.show()
     # output_plots\behavior_comparisons
-    
-        
+
 
 if __name__ == "__main__":
     main()

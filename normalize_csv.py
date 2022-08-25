@@ -92,8 +92,8 @@ class Source:
 
         # duplicating a random class until the lengths are even
         for behavior in [fss,ros,rcs]:
+            cap = len(behavior)-1 #-> picked from original pool
             while len(behavior) < max_behavior:
-                cap = len(behavior)-1
                 behavior.append( behavior[ r.randint(1,cap) ] )
 
         # unpacking gets rid of the order of things
