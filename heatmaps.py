@@ -1,4 +1,5 @@
 from statistics import mean, median
+import re
 import sys
 import json
 import numpy as np
@@ -87,8 +88,11 @@ def main():
 
     # humanData = processHuman(humanDict)
 
-    # keys = [ key for key in next(iter(compDict.values())) if (key != "confidence") and (key != "behavior")]
+    # not taking the consideration as possible outputs
     keys = [ key for key in next(iter(compDict.values())) if (key != "confidence") ]
+
+    # extracting the velocity values from the dictionary string key
+    velocities = [ float(re.findall("V[1-9]+\.?[0-9]+",v)[0][1:]) for v in compDict ]
 
     # a dictionary of 2d lists for the heatmap
     datas = {key: processData(compDict, key) for key in keys}
@@ -102,7 +106,7 @@ def main():
 
     # a list to convert the strings into the corresponding integers
     compData = [
-        [conversion[that] for that in line] for line in datas['behavior']
+        [ conversion[point] for point in line] for line in datas['behavior']
     ]
 
     #* finding the average contact particles for FS, RO, RC
@@ -127,7 +131,8 @@ def main():
     fig.suptitle(f"{TASK_ID} Quantities Comparison : {PLOT_DATA}", fontsize = 16, fontweight = "bold")
 
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angles
-    x_axis = list(np.round(np.linspace(0.4064,2.8446,13),4))
+    x_axis = list(set(velocities))
+    x_axis.sort()
 
     # custom colormap defs
     myColors = (

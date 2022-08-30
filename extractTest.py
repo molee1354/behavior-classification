@@ -86,7 +86,7 @@ def main():
             #* saving the computer behavior
             #todo Export <<output.behavior_obj.decision>> this here
             #! comp_dec is a tuple --> (behavior, confidence)
-            compDict[re.findall( "V[0-9]+\.?[0-9]+_A[0-9]*",path )[0]] = {
+            compDict[ re.findall( "V[0-9]+\.?[0-9]+_A[0-9]*",path )[0] ] = {
                 "behavior" : comp_dec.behavior,
                 "confidence": comp_dec.confidence,
                 "contact_pIDs": comp_dec.contact_pIDs,
@@ -96,6 +96,7 @@ def main():
 
                 #TODO normalizing this can also be an option
                 "crater_final_x": comp_dec.crater_final, # final disc x position with respect to the final crater position
+                "crater_min_y": comp_dec.crater_min_y,
                 "mound_final_x": comp_dec.mound_final, # final disc x position with respect to the final mound position
                 "disc_final_x": comp_dec.disc_final_x,
                 "disc_final_y": comp_dec.disc_final_y, # final disc height

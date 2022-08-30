@@ -332,6 +332,7 @@ class Comparer:
         disc_final_x,disc_final_y,disc_max_y = disc_xs[-1],disc_ys[-1],max(disc_ys)
         mound_final_x,mound_final_y = mound_xs[-1],mound_ys[-1]
         crater_final_x = crater_xs[-1] #-> crater_y is relatively unimportant
+        crater_min_y = min(crater_ys)
         
 
         return _DecisionPackage(
@@ -356,6 +357,8 @@ class Comparer:
             disc_final_x=disc_final_x,
             disc_final_y=disc_final_y,
             disc_max_y=disc_max_y,
+            crater_min_y=crater_min_y,
+
             impact_time=impact_time,
             num_timesteps=num_timesteps,
 
@@ -387,6 +390,7 @@ class _DecisionPackage:
     disc_final_x: float
     disc_final_y: float
     disc_max_y: float
+    crater_min_y: float
 
     num_timesteps: int
     impact_time: int # not very reliable
