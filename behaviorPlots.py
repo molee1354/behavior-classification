@@ -52,8 +52,22 @@ def processData(data_dict: dict) -> tuple[list[int],list[float]]:
                 if data_dict[key] == "RC":
                     behaviorList_I.append(2)
 
-            behaviorsList.append(behaviorList_I)
-            confidenceList.append(confidenceList_I)
+            # behaviorsList.append(behaviorList_I)
+            # confidenceList.append(confidenceList_I)
+
+            # all the 13's here are hardcoded
+            if len(behaviorList_I) < 13:
+                while len(behaviorList_I) < 13:
+                    behaviorList_I.append(3)
+                behaviorsList.append(behaviorList_I)
+            else:
+                behaviorsList.append(behaviorList_I)
+            
+            if len(confidenceList_I) < 13:
+                while len(confidenceList_I) < 13:
+                    confidenceList_I.append(0.05)
+            else:
+                confidenceList.append(confidenceList_I)
 
         return behaviorsList,confidenceList
     
@@ -66,7 +80,11 @@ def processData(data_dict: dict) -> tuple[list[int],list[float]]:
             # initializing each row 
             behaviorList_I = []
             confidenceList_I = []
-            for key in [k for k in data_dict.keys() if f"_A{angle}" in k]:
+            velocities = [re.findall("([0-9]+\.[0-9]+)",k)[0] for k in data_dict.keys() if f"_A{angle}" in k]
+            velocities.sort()
+            for vel in velocities:
+
+                key = f"V{vel}_A{angle}"
 
                 # adding the confidence
                 confidenceList_I.append(data_dict[key]["confidence"])
@@ -80,8 +98,19 @@ def processData(data_dict: dict) -> tuple[list[int],list[float]]:
                 if data_dict[key]["behavior"] == "RC":
                     behaviorList_I.append(2)
 
-            behaviorsList.append(behaviorList_I)
-            confidenceList.append(confidenceList_I)
+            # all the 13's here are hardcoded
+            if len(behaviorList_I) < 13:
+                while len(behaviorList_I) < 13:
+                    behaviorList_I.append(3)
+                behaviorsList.append(behaviorList_I)
+            else:
+                behaviorsList.append(behaviorList_I)
+            
+            if len(confidenceList_I) < 13:
+                while len(confidenceList_I) < 13:
+                    confidenceList_I.append(0.05)
+            else:
+                confidenceList.append(confidenceList_I)
 
     return behaviorsList, confidenceList 
     
@@ -95,8 +124,8 @@ def main():
 
     # the human dictionary is probably not sorted
     #try:
-    #    with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
-    #        humanDict_unsorted = json.load(file)
+    with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
+        humanDict_unsorted = json.load(file)
     
     ## if there is no json file to refer to, go to the old xlsx file
     #except FileNotFoundError:
@@ -117,36 +146,41 @@ def main():
         v = re.findall("[0-9]+\.[0-9]*",key)[0]
         if v not in x_axis:
             x_axis.append(v)
+    x_axis.sort()
         # if compDict[key]['behavior'] != humanDict_unsorted[key]:
     #        unmatching.append(key)
 
     #extracting x and y axes from the humanDict dictionary
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angle
     # x_axis = list(np.round(np.linspace(0.4064,2.8446,13),4))
-    x_axis = list(np.round(np.linspace(1.0,7.0,13),1))
+    # x_axis = list(np.round(np.linspace(1.0,7.0,13),1))
 
     #* rearranging human behavior
-    # humanDict = {}
-    # for y in y_axis:
-    #     for x in x_axis:
-    #         humanDict[f"V{x}_A{y}"] = humanDict_unsorted[f"V{x}_A{y}"]
+    humanDict = {}
+    for y in y_axis:
+        for x in x_axis:
+            try:
+                humanDict[f"V{x}_A{y}"] = humanDict_unsorted[f"V{x}_A{y}"]
+            except KeyError:
+                continue
     
     total_iter = len(x_axis)*len(y_axis)
 
     #calling the function on the dictionaries
-    # humanBehavior = np.array(processData(humanDict))[0]
+    humanBehavior = np.array(processData(humanDict))[0]
     comp_decision = processData(compDict)
     
     compBehavior = np.array(comp_decision[0])
     confidence = np.array(comp_decision[1])
 
-    # diffBehavior = np.logical_xor(humanBehavior, compBehavior)
-    # diffBehavior = humanBehavior != compBehavior
+    diffBehavior = np.logical_xor(np.array(humanBehavior), compBehavior)
+    diffBehavior = humanBehavior != compBehavior
 
     fig, (
-        ax1,ax2
-            ) = plt.subplots(1,2, figsize=(13,6), sharey=False)
-    fig.suptitle(f"{TASK_ID} Behavior Comparison", 
+        ax1,ax3,ax4
+            ) = plt.subplots(1,3, figsize=(16,5), sharey=False)
+    # fig.suptitle(f"{TASK_ID} Behavior Comparison", 
+    fig.suptitle("Bennu Computer Classification", 
         fontweight = "bold",
         fontsize = 16,
     )
@@ -155,7 +189,8 @@ def main():
     myColors = (
         (199/255,45/255,34/255,1.0), 
         (224/255,227/255,34/255,1.0), 
-        (64/255,133/255,27/255,1.0)
+        (64/255,133/255,27/255,1.0),
+        (127/255,138/255,130/255,1.0)
     )
     colors = LinearSegmentedColormap.from_list('Custom', myColors, len(myColors))
 
@@ -164,80 +199,80 @@ def main():
         (0.8,0.8,0.8,1), 
         (0,0,0,1)
     )
-    # colorsBW = LinearSegmentedColormap.from_list('Custom', myColorsBW, len(myColorsBW))
+    colorsBW = LinearSegmentedColormap.from_list('Custom', myColorsBW, len(myColorsBW))
 
     #plotting
-    ax1.set_title("Computer plot")
+    ax1.set_title("Human Classification")
     ax1 = sns.heatmap(
         ax = ax1,
+        data = humanBehavior,
+        yticklabels=y_axis,
+        linewidths=2,
+        cmap=colors,
+        vmax=3, vmin=0
+    )
+    ax1.invert_yaxis()
+    ax1.set_xticklabels(x_axis, rotation=45)
+    ax1.set_xlabel("Velocities (m/s)")
+    ax1.set_ylabel("Angles (deg)")
+    ax1.margins(1)
+
+    colorbar1 = ax1.collections[0].colorbar
+    colorbar1.set_ticks( [3*(1/8),3*(3/8),3*(5/8),3*(7/8)] )
+    colorbar1.set_ticklabels( ["FS","RO","RC","undef"] )
+
+    # ax2.set_title(f"Confidence (Avg = {np.average(confidence): .3f})")
+    # ax2 = sns.heatmap(
+    #     ax = ax2,
+    #     data = confidence,
+    #     yticklabels=y_axis,
+    #     linewidths=2,
+    #     cmap="Reds",
+    #     # vmax=2, vmin=0
+    # )
+    # ax2.invert_yaxis()
+    # ax2.set_xticklabels(x_axis, rotation=45)
+    # ax2.set_xlabel("Velocities (m/s)")
+    # ax2.set_ylabel("Angles (deg)")
+
+    # colorbar4 = ax2.collections[0].colorbar
+    # colorbar4.set_ticks(np.linspace(0,1,11)) 
+
+    ax3.set_title("Computer Classification")
+    ax3 = sns.heatmap(
+        ax = ax3,
         data = compBehavior,
         yticklabels=y_axis,
         linewidths=2,
         cmap=colors,
-        vmax=2, vmin=0
+        vmax=3, vmin=0
     )
-    ax1.invert_yaxis()
-    ax1.set_xticklabels(x_axis, rotation=45)
-    ax1.set_xlabel("Velocities")
-    ax1.set_ylabel("Angles")
-    ax1.margins(1)
+    ax3.invert_yaxis()
+    ax3.set_xticklabels(x_axis, rotation=45)
+    ax3.set_xlabel("Velocities (m/s)")
+    ax3.set_ylabel("Angles (deg)")
 
-    colorbar1 = ax1.collections[0].colorbar
-    colorbar1.set_ticks([0.33,1.0,1.66])
-    colorbar1.set_ticklabels(["FS","RO","RC"])
+    colorbar2 = ax3.collections[0].colorbar
+    colorbar2.set_ticks( [3*(1/8),3*(3/8),3*(5/8),3*(7/8)] )
+    colorbar2.set_ticklabels( ["FS","RO","RC","undef"] )
 
-    ax2.set_title(f"Confidence (Avg = {np.average(confidence): .3f})")
-    ax2 = sns.heatmap(
-        ax = ax2,
-        data = confidence,
+    ax4.set_title("Unmatching")
+    ax4 = sns.heatmap(
+        ax = ax4,
+        data = diffBehavior,
         yticklabels=y_axis,
         linewidths=2,
-        cmap="Reds",
+        cmap=colorsBW,
         # vmax=2, vmin=0
     )
-    ax2.invert_yaxis()
-    ax2.set_xticklabels(x_axis, rotation=45)
-    ax2.set_xlabel("Velocities")
-    ax2.set_ylabel("Angles")
+    ax4.invert_yaxis()
+    ax4.set_xticklabels(x_axis, rotation=45)
+    ax4.set_xlabel("Velocities (m/s)")
+    ax4.set_ylabel("Angles (deg)")
 
-    colorbar4 = ax2.collections[0].colorbar
-    colorbar4.set_ticks(np.linspace(0,1,11)) 
-
-    # ax3.set_title("Human Plot")
-    # ax3 = sns.heatmap(
-    #     ax = ax3,
-    #     data = humanBehavior,
-    #     yticklabels=y_axis,
-    #     linewidths=2,
-    #     cmap=colors,
-    #     vmax=2, vmin=0
-    # )
-    # ax3.invert_yaxis()
-    # ax3.set_xticklabels(x_axis, rotation=45)
-    # ax3.set_xlabel("Velocities")
-    # ax3.set_ylabel("Angles")
-
-    # colorbar2 = ax3.collections[0].colorbar
-    # colorbar2.set_ticks([0.33,1.0,1.66])
-    # colorbar2.set_ticklabels(["FS","RO","RC"])
-
-    # ax4.set_title("Unmatching")
-    # ax4 = sns.heatmap(
-    #     ax = ax4,
-    #     data = diffBehavior,
-    #     yticklabels=y_axis,
-    #     linewidths=2,
-    #     cmap=colorsBW,
-    #     # vmax=2, vmin=0
-    # )
-    # ax4.invert_yaxis()
-    # ax4.set_xticklabels(x_axis, rotation=45)
-    # ax4.set_xlabel("Velocities")
-    # ax4.set_ylabel("Angles")
-
-    # colorbar3 = ax4.collections[0].colorbar
-    # colorbar3.set_ticks([0.25, 0.75])
-    # colorbar3.set_ticklabels(["Matching", "Unmatching"])
+    colorbar3 = ax4.collections[0].colorbar
+    colorbar3.set_ticks([0.25, 0.75])
+    colorbar3.set_ticklabels(["Matching", "Unmatching"])
 
     # outputText = f"Matching Rate: {(total_iter-len(unmatching))/total_iter:.3}\n{len(unmatching)} Unmatching parameters: {unmatching}"
     plt.subplots_adjust(
@@ -250,9 +285,9 @@ def main():
     )
     # plt.gcf().text(0.1, 0.1, outputText, fontsize=12)
 
-    plots_savepath = f"{var.output_root}/output_plots/behavior_comparisons"
-    os.makedirs(plots_savepath, exist_ok=True)
-    plt.savefig(f"{plots_savepath}/behaviorPlot_{TASK_ID}_{TRIAL_ID}.svg", format = "svg")
+    # plots_savepath = f"{var.output_root}/output_plots/behavior_comparisons"
+    # os.makedirs(plots_savepath, exist_ok=True)
+    # plt.savefig(f"{plots_savepath}/behaviorPlot_{TASK_ID}_{TRIAL_ID}.svg", format = "svg")
 
     plt.show()
     # output_plots\behavior_comparisons

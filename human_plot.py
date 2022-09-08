@@ -115,7 +115,8 @@ class Classification:
 
 def main() -> None:
     filepath = var.human_root
-    human_classification = Classification( f"{filepath}/Human_Behavior_Bennu_1x.json" )
+    # human_classification = Classification( f"{filepath}/Human_Behavior_Bennu_1x.json" )
+    human_classification = Classification( f"{filepath}/Human_Behavior_Moon_1x.json" )
     human_classification.process_data()
     human_classification.plot_behavior_map()
 
