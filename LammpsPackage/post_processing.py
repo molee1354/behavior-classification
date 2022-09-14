@@ -227,7 +227,8 @@ class Comparer:
         else:
             decisionDict["FS"] += 1
             reasons.append(f"{list(decisionDict.values())} : crater_out is False")
-        
+       
+ 
         #* if the bottom of the impactor is higher than the max height of the mound
         max_mound = max(mound_ys)
         if max_mound < max_disc_y-disc_r:
@@ -335,10 +336,11 @@ class Comparer:
         crater_min_y = min(crater_ys)
         
 
+        iteration=re.findall( "V[0-9]+\.?[0-9]+_A[0-9]*",self.filename )
         return _DecisionPackage(
 
             #TODO review how the filename for this works
-            iteration=re.findall( "V[0-9]+\.?[0-9]+_A[0-9]*",self.filename )[0],
+            iteration=re.findall( "V[0-9]+\.?[0-9]+_A[0-9]*",self.filename ),
             
             behavior=behavior,
 
