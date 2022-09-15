@@ -1,4 +1,5 @@
 import os
+import re
 import json
 from time import sleep
 import numpy as np
@@ -27,12 +28,13 @@ class Filepaths:
         pg.press('enter')
         pg.press('enter')
 
-sim_filepath = f"/run/media/moosung/9C33-6BBD/Shared/Research/Granular/data/task_Bennu_1x"
+# sim_filepath = f"/run/media/moosung/9C33-6BBD/Shared/Research/Granular/data/task_Bennu_1x"
+sim_filepath = f"E:\\Shared\\Research\\Granular\\data\\task_Bennu_1x"
 
-# try:
-#     task = sys.argv[1]
-# except IndexError:
-#     task = "LIS01"
+try:
+    task = sys.argv[1]
+except IndexError:
+    task = "Bennu_1x_mlee"
 
 reg_files = [reg for reg in os.listdir(sim_filepath) if "dmp.reg" in reg]
 
@@ -51,8 +53,9 @@ shuffle(path_names)
 
 inputBehavior = {}
 for idx, element in enumerate(path_names):
-    Filepaths.do_process(element)
-    inputBehavior[element[-8:]] = input(f"[{idx}] Input behavior: ")
+    Filepaths.do_process( f"{sim_filepath}\\{element}")
+    iteration = re.findall("V[0-9]+\.?[0-9]+_A[0-9]+")[0]
+    inputBehavior[iteration] = input(f"[{idx}] Input behavior: ")
 
     with open(f"Human_Behavior_{task}.json", 'w') as jsonOut:
         json.dump(inputBehavior,jsonOut, indent=4)
