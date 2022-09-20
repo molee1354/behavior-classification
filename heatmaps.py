@@ -1,8 +1,9 @@
-from statistics import mean, median
+from statistics import mean, median, mode
 import re
 import sys
 import json
 import numpy as np
+from scipy.sparse import data
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
@@ -71,11 +72,40 @@ def processData(input_dict: dict, parameter: str) -> list[list[int]]:
             - A 2-D list of the values within the dictionary
     """
 
-    return [
-        [input_dict[key][parameter] for key in [k for k in input_dict.keys() if f"_A{angle}" in k] ] for angle in var.angles
-    ]
+    velocities = list(set([ re.findall("V[0-9]+\.[0-9]+",v)[0][1:] for v in input_dict ]))
+    velocities.sort()
+    # return [
+    #     [input_dict[key][parameter] for key in [k for k in input_dict.keys() if f"_A{angle}" in k] ] for angle in var.angles
+    # ]
+    # return [
+    #     [ input_dict[f"V{vel}_A{angle}"][parameter] for vel,angle in zip(velocities, var.angles) ]
+    # ]
+    return_matrix = []
+    for angle in var.angles:
+        return_vector = []
+        for vel in velocities:
+            try:
+                return_vector.append(input_dict[f"V{vel}_A{angle}"][parameter])
+            except KeyError:
+                pass
+        
+        return_matrix.append(return_vector)
+
+    return return_matrix
 
 
+def fill_matrix( matrix,target_length:int ):
+
+    return_matrix = []
+    for data_array in matrix:
+        if len(data_array)<target_length:
+            while len(data_array)<target_length:
+                data_array.append(-1)
+        return_matrix.append(data_array)
+
+    return return_matrix
+    
+    
 def main():
 
     # loading the data in a dictionary
@@ -92,16 +122,17 @@ def main():
     keys = [ key for key in next(iter(compDict.values())) if (key != "confidence") ]
 
     # extracting the velocity values from the dictionary string key
-    velocities = [ float(re.findall("V[1-9]+\.?[0-9]+",v)[0][1:]) for v in compDict ]
+    velocities = list(set([ re.findall("V[0-9]+\.[0-9]+",v)[0][1:] for v in compDict ]))
 
     # a dictionary of 2d lists for the heatmap
-    datas = {key: processData(compDict, key) for key in keys}
+    datas = {key: fill_matrix( processData(compDict, key),len(velocities) ) for key in keys}
 
     # conversion key
     conversion = {
         'FS': 0,
         'RO': 1,
-        'RC': 2
+        'RC': 2,
+        -1: 3,
     }
 
     # a list to convert the strings into the corresponding integers
@@ -138,7 +169,8 @@ def main():
     myColors = (
         (199/255,45/255,34/255,1.0), 
         (224/255,227/255,34/255,1.0), 
-        (64/255,133/255,27/255,1.0)
+        (64/255,133/255,27/255,1.0),
+        (127/255,138/255,130/255,1.0)
     )
     colors = LinearSegmentedColormap.from_list('Custom', myColors, len(myColors))
     binColors = (
@@ -191,7 +223,7 @@ def main():
         yticklabels=y_axis,
         linewidths=2,
         cmap=colors,
-        vmax=2, vmin=0
+        vmax=3, vmin=0
     )
     ax3.set_xticklabels(x_axis, rotation=45)
     ax3.invert_yaxis()
@@ -200,9 +232,9 @@ def main():
     ax3.margins(1)
 
     colorbar2 = ax3.collections[0].colorbar
-    colorbar2.set_ticks([0.33,1.0,1.66])
-    colorbar2.set_ticklabels(["FS","RO","RC"])
-    
+    colorbar2.set_ticks( [3*(1/8),3*(3/8),3*(5/8),3*(7/8)] )
+    colorbar2.set_ticklabels( ["FS","RO","RC","undef"] )
+
     # Human Behavior Plot
     # ax3.set_title("Human Plot")
     # ax3 = sns.heatmap(
