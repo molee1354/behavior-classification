@@ -12,8 +12,10 @@ class Source:
     LABELS = 2
 
 
-    def __init__( self,input_file ) -> None:
-        
+    def __init__( self, input_file:str, human_file:str ) -> None:
+        with open( human_file,'r' ) as file:
+            self.human_dict = json.load(file)
+
         with open( input_file,'r' ) as file:
             self.input_dict = json.load(file)
 
@@ -32,12 +34,12 @@ class Source:
         """
         
         behavior_counts = [0,0,0]
-        for value in self.input_dict.values():
-            if value["behavior"] == "FS":
+        for value in self.human_dict.values():
+            if value == "FS":
                 behavior_counts[0] += 1
-            if value["behavior"] == "RO":
+            if value == "RO":
                 behavior_counts[1] += 1
-            if value["behavior"] == "RC":
+            if value == "RC":
                 behavior_counts[2] += 1
 
         return behavior_counts
@@ -62,9 +64,9 @@ class Source:
                 value["disc_max_y"]
             ]
             labels = [
-                1 if value["behavior"] == "FS" else 0,
-                1 if value["behavior"] == "RO" else 0,
-                1 if value["behavior"] == "RC" else 0
+                1 if self.human_dict[key] == "FS" else 0,
+                1 if self.human_dict[key] == "RO" else 0,
+                1 if self.human_dict[key] == "RC" else 0
             ]
             classes.append(
                 [
@@ -126,7 +128,9 @@ def main() -> None:
     # write into the var.py file. All file operations are `appends`
     filepath = f"{var.output_root}/behaviors/computer/"  \
             f"Computer_Behavior_{var.TASK_ID}_{var.TRIAL_ID}.json"
-    datas = Source( filepath )
+    human = f"{var.human_root}/Human_Behavior_{var.TASK_ID}.json"
+
+    datas = Source( input_file=filepath,human_file = human )
 
     normalized_mat = datas.normalize_data()
     datas.write_to_csv( normalized_mat )

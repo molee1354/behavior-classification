@@ -42,7 +42,7 @@ class RegFile:
         # return { idx+1 : int(self.lines[idx+1].split()[0])  for idx, line in enumerate(self.lines) if line == "ITEM: TIMESTEP\n" }        
         return [ (idx+1 , int(self.lines[idx+1].split()[0]))  for idx, line in enumerate(self.lines) if line == "ITEM: TIMESTEP\n" ]
 
-    def __get_bed_at(self, idx = None, timestep = None, include_only: list[int] = None):
+    def __get_bed_at(self, idx = None, timestep = None, include_only: list[int] = list[None]):
         """
         Method to get the particles in the initial bed (particle bed at first timestep) 
             - idx: int
