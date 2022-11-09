@@ -177,8 +177,8 @@ def main():
     diffBehavior = humanBehavior != compBehavior
 
     fig, (
-        ax1,ax3,ax4
-            ) = plt.subplots(1,3, figsize=(16,5), sharey=False)
+        ax1,ax2
+            ) = plt.subplots(1,2, figsize=(16,5), sharey=False)
     # fig.suptitle(f"{TASK_ID} Behavior Comparison", 
     fig.suptitle("Bennu Computer Classification", 
         fontweight = "bold",
@@ -202,10 +202,10 @@ def main():
     colorsBW = LinearSegmentedColormap.from_list('Custom', myColorsBW, len(myColorsBW))
 
     #plotting
-    ax1.set_title("Human Classification")
+    ax1.set_title("Computer Classification")
     ax1 = sns.heatmap(
         ax = ax1,
-        data = humanBehavior,
+        data = compBehavior,
         yticklabels=y_axis,
         linewidths=2,
         cmap=colors,
@@ -221,58 +221,57 @@ def main():
     colorbar1.set_ticks( [3*(1/8),3*(3/8),3*(5/8),3*(7/8)] )
     colorbar1.set_ticklabels( ["FS","RO","RC","undef"] )
 
-    # ax2.set_title(f"Confidence (Avg = {np.average(confidence): .3f})")
-    # ax2 = sns.heatmap(
-    #     ax = ax2,
-    #     data = confidence,
-    #     yticklabels=y_axis,
-    #     linewidths=2,
-    #     cmap="Reds",
-    #     # vmax=2, vmin=0
-    # )
-    # ax2.invert_yaxis()
-    # ax2.set_xticklabels(x_axis, rotation=45)
-    # ax2.set_xlabel("Velocities (m/s)")
-    # ax2.set_ylabel("Angles (deg)")
-
-    # colorbar4 = ax2.collections[0].colorbar
-    # colorbar4.set_ticks(np.linspace(0,1,11)) 
-
-    ax3.set_title("Computer Classification")
-    ax3 = sns.heatmap(
-        ax = ax3,
-        data = compBehavior,
+    ax2.set_title(f"Confidence (Avg = {np.average(confidence): .3f})")
+    ax2 = sns.heatmap(
+        ax = ax2,
+        data = confidence,
         yticklabels=y_axis,
         linewidths=2,
-        cmap=colors,
-        vmax=3, vmin=0
-    )
-    ax3.invert_yaxis()
-    ax3.set_xticklabels(x_axis, rotation=45)
-    ax3.set_xlabel("Velocities (m/s)")
-    ax3.set_ylabel("Angles (deg)")
-
-    colorbar2 = ax3.collections[0].colorbar
-    colorbar2.set_ticks( [3*(1/8),3*(3/8),3*(5/8),3*(7/8)] )
-    colorbar2.set_ticklabels( ["FS","RO","RC","undef"] )
-
-    ax4.set_title("Unmatching")
-    ax4 = sns.heatmap(
-        ax = ax4,
-        data = diffBehavior,
-        yticklabels=y_axis,
-        linewidths=2,
-        cmap=colorsBW,
+        cmap="Reds",
         # vmax=2, vmin=0
     )
-    ax4.invert_yaxis()
-    ax4.set_xticklabels(x_axis, rotation=45)
-    ax4.set_xlabel("Velocities (m/s)")
-    ax4.set_ylabel("Angles (deg)")
+    ax2.invert_yaxis()
+    ax2.set_xticklabels(x_axis, rotation=45)
+    ax2.set_xlabel("Velocities (m/s)")
+    ax2.set_ylabel("Angles (deg)")
 
-    colorbar3 = ax4.collections[0].colorbar
-    colorbar3.set_ticks([0.25, 0.75])
-    colorbar3.set_ticklabels(["Matching", "Unmatching"])
+    colorbar4 = ax2.collections[0].colorbar
+    colorbar4.set_ticks(np.linspace(0,1,11)) 
+
+    # ax3 = sns.heatmap(
+    #     ax = ax3,
+    #     data = compBehavior,
+    #     yticklabels=y_axis,
+    #     linewidths=2,
+    #     cmap=colors,
+    #     vmax=3, vmin=0
+    # )
+    # ax3.invert_yaxis()
+    # ax3.set_xticklabels(x_axis, rotation=45)
+    # ax3.set_xlabel("Velocities (m/s)")
+    # ax3.set_ylabel("Angles (deg)")
+
+    # colorbar2 = ax3.collections[0].colorbar
+    # colorbar2.set_ticks( [3*(1/8),3*(3/8),3*(5/8),3*(7/8)] )
+    # colorbar2.set_ticklabels( ["FS","RO","RC","undef"] )
+
+    # ax4.set_title("Unmatching")
+    # ax4 = sns.heatmap(
+    #     ax = ax4,
+    #     data = diffBehavior,
+    #     yticklabels=y_axis,
+    #     linewidths=2,
+    #     cmap=colorsBW,
+    #     # vmax=2, vmin=0
+    # )
+    # ax4.invert_yaxis()
+    # ax4.set_xticklabels(x_axis, rotation=45)
+    # ax4.set_xlabel("Velocities (m/s)")
+    # ax4.set_ylabel("Angles (deg)")
+
+    # colorbar3 = ax4.collections[0].colorbar
+    # colorbar3.set_ticks([0.25, 0.75])
+    # colorbar3.set_ticklabels(["Matching", "Unmatching"])
 
     # outputText = f"Matching Rate: {(total_iter-len(unmatching))/total_iter:.3}\n{len(unmatching)} Unmatching parameters: {unmatching}"
     plt.subplots_adjust(

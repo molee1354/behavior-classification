@@ -131,14 +131,7 @@ def main():
             # outputting the final vote 
             logging.info(f"\tVotes: {output.behavior_obj.decisionDict}")
                 
-    # logging.info(f"\nMatch rate: { ( len(humanDict)-len(unmatching) )/len(humanDict):.3f}")    
-    # logging.info(f"{len(unmatching)} unmatching parameters: {unmatching}")    
 
-    # printing the outputs as a table
-    # logging.info("\n%10s%10s" %("iter", "behavior"))
-    # for key in unmatching:        
-    #     logging.info("%10s%10s" %(key, compDict[key]["behavior"]))
-    
     # saving the computer behavior classifications    
     behavior_savepath = f"{var.output_root}/behaviors/computer"
     os.makedirs(behavior_savepath, exist_ok=True)

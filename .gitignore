@@ -7,6 +7,7 @@ output_plots/
 outputs/
 venv/
 Output_Refactor/
+.idea/
 
 # filetypes
 *.pyc
