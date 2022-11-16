@@ -81,7 +81,11 @@ def main():
             os.makedirs(save_path, exist_ok=True)
             
             # plotting function
-            plotter.path_plots(save_path, "svg")
+            try:
+                plotter.path_plots(save_path, "svg")
+            except ValueError:
+                print(f"ValueError occured in {path}")
+                pass
 
             #* saving the computer behavior
             #todo Export <<output.behavior_obj.decision>> this here

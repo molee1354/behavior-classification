@@ -87,6 +87,7 @@ def processData(input_dict: dict, parameter: str) -> list[list[int]]:
             try:
                 return_vector.append(input_dict[f"V{vel}_A{angle}"][parameter])
             except KeyError:
+                # return_vector.append(-1)
                 pass
         
         return_matrix.append(return_vector)
@@ -145,11 +146,19 @@ def main():
     for i, line in enumerate(datas["behavior"]):
         for j, thing in enumerate(line):
             if thing == 'FS':
-                fss.append(datas["contact_pIDs"][i][j])
+                fss.append(datas[PLOT_DATA][i][j])
             if thing == 'RO':
-                ros.append(datas["contact_pIDs"][i][j])
+                ros.append(datas[PLOT_DATA][i][j])
             if thing == 'RC':
-                rcs.append(datas["contact_pIDs"][i][j])
+                rcs.append(datas[PLOT_DATA][i][j])
+
+    # dealing with empty arrays
+    if len(fss) < 1:
+        fss = [-1]
+    if len(ros) < 1:
+        ros = [-1]
+    if len(rcs) < 1:
+        rcs = [-1]
 
     # examining the maximum and minimum values
     print(f"[{TASK_ID} : {TRIAL_ID}] - Quantity : {PLOT_DATA}")
@@ -159,7 +168,7 @@ def main():
 
     #* plotting
     fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(17,6))
-    fig.suptitle(f"{TASK_ID} Quantities Comparison : {PLOT_DATA}", fontsize = 16, fontweight = "bold")
+    fig.suptitle(f"{TASK_ID} {TRIAL_ID} Quantities Comparison : {PLOT_DATA}", fontsize = 16, fontweight = "bold")
 
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angles
     x_axis = list(set(velocities))

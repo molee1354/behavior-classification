@@ -124,8 +124,8 @@ def main():
 
     # the human dictionary is probably not sorted
     #try:
-    with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
-        humanDict_unsorted = json.load(file)
+    # with open(f"{var.output_root}/behaviors/human/Human_Behavior_{TASK_ID}.json", 'r') as file:
+    #     humanDict_unsorted = json.load(file)
     
     ## if there is no json file to refer to, go to the old xlsx file
     #except FileNotFoundError:
@@ -156,31 +156,31 @@ def main():
     # x_axis = list(np.round(np.linspace(1.0,7.0,13),1))
 
     #* rearranging human behavior
-    humanDict = {}
-    for y in y_axis:
-        for x in x_axis:
-            try:
-                humanDict[f"V{x}_A{y}"] = humanDict_unsorted[f"V{x}_A{y}"]
-            except KeyError:
-                continue
+    # humanDict = {}
+    # for y in y_axis:
+    #     for x in x_axis:
+    #         try:
+    #             humanDict[f"V{x}_A{y}"] = humanDict_unsorted[f"V{x}_A{y}"]
+    #         except KeyError:
+    #             continue
     
-    total_iter = len(x_axis)*len(y_axis)
+    # total_iter = len(x_axis)*len(y_axis)
 
     #calling the function on the dictionaries
-    humanBehavior = np.array(processData(humanDict))[0]
+    # humanBehavior = np.array(processData(humanDict))[0]
     comp_decision = processData(compDict)
     
     compBehavior = np.array(comp_decision[0])
     confidence = np.array(comp_decision[1])
 
-    diffBehavior = np.logical_xor(np.array(humanBehavior), compBehavior)
-    diffBehavior = humanBehavior != compBehavior
+    # diffBehavior = np.logical_xor(np.array(humanBehavior), compBehavior)
+    # diffBehavior = humanBehavior != compBehavior
 
     fig, (
         ax1,ax2
-            ) = plt.subplots(1,2, figsize=(16,5), sharey=False)
+            ) = plt.subplots(1,2, figsize=(14,5), sharey=False)
     # fig.suptitle(f"{TASK_ID} Behavior Comparison", 
-    fig.suptitle("Bennu Computer Classification", 
+    fig.suptitle(f"{TASK_ID} {TRIAL_ID} Computer Classification", 
         fontweight = "bold",
         fontsize = 16,
     )
@@ -284,9 +284,9 @@ def main():
     )
     # plt.gcf().text(0.1, 0.1, outputText, fontsize=12)
 
-    # plots_savepath = f"{var.output_root}/output_plots/behavior_comparisons"
-    # os.makedirs(plots_savepath, exist_ok=True)
-    # plt.savefig(f"{plots_savepath}/behaviorPlot_{TASK_ID}_{TRIAL_ID}.svg", format = "svg")
+    plots_savepath = f"{var.output_root}/output_plots/behavior_comparisons"
+    os.makedirs(plots_savepath, exist_ok=True)
+    plt.savefig(f"{plots_savepath}/behaviorPlot_{TASK_ID}_{TRIAL_ID}.svg", format = "svg")
 
     plt.show()
     # output_plots\behavior_comparisons

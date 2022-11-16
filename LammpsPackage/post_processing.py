@@ -287,11 +287,12 @@ class Comparer:
         #* implementing stuff using contact pIDs
         # the number of unique particles encountered by the disc
         unique_pIDs = len(contact_pIDs)
-        reasons.append(f"{list(decisionDict.values())} : unique_pID = {unique_pIDs} > 25 --> -{abs(unique_pIDs - 25)//6}")
+        # reasons.append(f"{list(decisionDict.values())} : unique_pID = {unique_pIDs} > 25 --> -{abs(unique_pIDs - 25)//6}")
         
-        min_RO = 25
+        # 1114 min_RO value changed 25 --> 10
+        min_RO = 12
         if unique_pIDs > min_RO:
-            decisionDict["RO"] += abs(unique_pIDs-min_RO)//4
+            decisionDict["RO"] += abs(unique_pIDs-min_RO)//3
             decisionDict["FS"] -= 1
             decisionDict["RC"] -= 1
             reasons.append(f"{list(decisionDict.values())} : unique_pID = {unique_pIDs} > {min_RO} --> {abs(unique_pIDs - 30)//4}")
