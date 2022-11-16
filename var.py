@@ -13,7 +13,7 @@ output_root = "/home/moosung/projects/Research/Granular/behavior-classification/
 
 # task/trial id
 TASK_ID = "Moon_1x"
-TRIAL_ID = "cls1108_M2"
+TRIAL_ID = "cls1108_M3"
 
 angles = np.linspace(20, 70, 11, dtype=int)
 

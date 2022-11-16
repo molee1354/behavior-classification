@@ -94,7 +94,7 @@ def main():
                 "behavior" : comp_dec.behavior,
                 "confidence": comp_dec.confidence,
                 "contact_pIDs": comp_dec.contact_pIDs,
-                "airborne": comp_dec.airborne,
+                # "airborne": comp_dec.airborne,
                 "surpasses": comp_dec.surpasses,
                 "crater_out": comp_dec.crater_out,
 

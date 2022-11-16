@@ -128,7 +128,6 @@ class Comparer:
         reasons = [f"{list(decisionDict.values())} : start"]
 
         #* airborne state analysis
-        
         # vel_xs = np.array(self.get_data('disc_vx', as_array=True)) #! not in old datafiles
         try:
             vel_xs = np.array(self.get_data('disc_vx', as_array=True))
@@ -146,23 +145,25 @@ class Comparer:
         
         # determining the airborne length
         #TODO airborne length is not consistent...
-        length = 0
-        length_array = []
-        for idx, (acc,vel) in enumerate(zip(acc_xs, vel_xs)):
-            
-            #ignoring cases where the velocity is effectively zero
-            if idx == 0 or ( (-1e-06 < vel < 1e-06) or (vel_xs[0]*0.97 < vel < vel_xs[0]*1.03) ):
-                continue
-            
-            #for cases where acceleration is effectively zero
-            if -1e-2 < acc < 1e-2:
-                # length += 1
-                #! since we are skipping timesteps
-                length += 2
 
-            else:
-                length_array.append(length)
-                length = 0
+        #! 1116 NO AIRBORNE
+        #length = 0
+        #length_array = []
+        #for idx, (acc,vel) in enumerate(zip(acc_xs, vel_xs)):
+            
+        #    #ignoring cases where the velocity is effectively zero
+        #    if idx == 0 or ( (-1e-06 < vel < 1e-06) or (vel_xs[0]*0.97 < vel < vel_xs[0]*1.03) ):
+        #        continue
+            
+        #    #for cases where acceleration is effectively zero
+        #    if -1e-2 < acc < 1e-2:
+        #        # length += 1
+        #        #! since we are skipping timesteps
+        #        length += 2
+
+        #    else:
+        #        length_array.append(length)
+        #        length = 0
 
         #* initializing certain behavior indicators
         switches = ['up']
@@ -246,17 +247,30 @@ class Comparer:
 
 
         #* analyzing the airborne case
-        try:
-            length = max(length_array)
-            reasons.append(f"{list(decisionDict.values())} : length = {length} from {length_array}")
+        # try:
+        #     length = max(length_array)
+        #     reasons.append(f"{list(decisionDict.values())} : length = {length} from {length_array}")
         
-        # this usually doesn't happen very often, if ever
-        except ValueError:
-            length = 0
-            decisionDict["FS"] += 1
-            decisionDict["RO"] += 1
-            decisionDict["RC"] -= 1
-            reasons.append(f"{list(decisionDict.values())} : length = 0 (ValueError Raised)")
+        # # this usually doesn't happen very often, if ever
+        # except ValueError:
+        #     length = 0
+        #     decisionDict["FS"] += 1
+        #     decisionDict["RO"] += 1
+        #     decisionDict["RC"] -= 1
+        #     reasons.append(f"{list(decisionDict.values())} : length = 0 (ValueError Raised)")
+
+        ##* airborne
+        #if length > 1: #! starting at just 1% of the total simulation time
+        #    # behavior = 'RC'
+        #    # decisionDict["FS"] -= 1
+        #    # decisionDict["RO"] -= 1
+        #    decisionDict["RC"] += length//6 #* by threshold
+        #    reasons.append(f"{list(decisionDict.values())} : length > 1 (length = {length}) --> +{length//6}")
+        #else:
+        #    decisionDict["FS"] += 1
+        #    decisionDict["RO"] += 1
+        #    decisionDict["RC"] -= 1
+        #    reasons.append(f"{list(decisionDict.values())} : length < 1 (length = {length})")
 
 
         #* if the impactor never surpasses the mound
@@ -271,19 +285,6 @@ class Comparer:
             decisionDict["RC"] -= 1
             reasons.append(f"{list(decisionDict.values())} : surpasses is False")
         
-        #* airborne
-        if length > 1: #! starting at just 1% of the total simulation time
-            # behavior = 'RC'
-            # decisionDict["FS"] -= 1
-            # decisionDict["RO"] -= 1
-            decisionDict["RC"] += length//6 #* by threshold
-            reasons.append(f"{list(decisionDict.values())} : length > 1 (length = {length}) --> +{length//6}")
-        else:
-            decisionDict["FS"] += 1
-            decisionDict["RO"] += 1
-            decisionDict["RC"] -= 1
-            reasons.append(f"{list(decisionDict.values())} : length < 1 (length = {length})")
-
         #* implementing stuff using contact pIDs
         # the number of unique particles encountered by the disc
         unique_pIDs = len(contact_pIDs)
@@ -353,7 +354,7 @@ class Comparer:
 
             # conditional datas
             contact_pIDs=len(self.dataDict['contact_pIDs']),
-            airborne=length,
+            # airborne=length,
             switches=len(switches),
             crater_final=crater_final_x,
             mound_final=mound_final_x,
@@ -385,7 +386,7 @@ class _DecisionPackage:
 
     # properties of the simulation
     contact_pIDs: int
-    airborne: int
+    # airborne: int
     switches: int
 
     crater_final: float
@@ -496,7 +497,7 @@ class Visualizer:
             ts,
             package.datas['disc_vx'],
             'k-',
-            label = f"x-velocity (length={package.airborne})",
+            label = f"x-velocity",
         )
         ax4.grid(visible = True)
         ax4.set_title("Disc X-Velocity")
@@ -509,7 +510,7 @@ class Visualizer:
             ts,
             package.datas['disc_ax'],
             'k-',
-            label = f"x-acc (length={package.airborne})",
+            label = f"x-acc",
         )
         ax5.grid(visible = True)
         ax5.set_title("Disc X-Acceleration")

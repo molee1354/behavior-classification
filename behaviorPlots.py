@@ -287,6 +287,7 @@ def main():
     plots_savepath = f"{var.output_root}/output_plots/behavior_comparisons"
     os.makedirs(plots_savepath, exist_ok=True)
     plt.savefig(f"{plots_savepath}/behaviorPlot_{TASK_ID}_{TRIAL_ID}.svg", format = "svg")
+    plt.savefig(f"{plots_savepath}/behaviorPlot_{TASK_ID}_{TRIAL_ID}.png", format = "png")
 
     plt.show()
     # output_plots\behavior_comparisons
