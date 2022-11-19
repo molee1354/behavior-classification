@@ -11,7 +11,6 @@ class Source:
     FEATURES = 1
     LABELS = 2
 
-
     def __init__( self, input_file:str, human_file:str ) -> None:
         with open( human_file,'r' ) as file:
             self.human_dict = json.load(file)
@@ -24,7 +23,6 @@ class Source:
         os.makedirs( self.path,exist_ok=True )
 
         self.behavior_counts = self.__get_behavior_count()
-
 
     def __get_behavior_count( self ) -> list[int]:
         """
@@ -43,7 +41,6 @@ class Source:
                 behavior_counts[2] += 1
 
         return behavior_counts
-
     
     def get_data_matrix( self ) -> list[ list[str] | list[list[float]] | list[list[int]] ]:
         classes = []
@@ -51,7 +48,7 @@ class Source:
             ids = f"{var.TASK_ID}_{key}"
             features = [
                 value["contact_pIDs"],
-                value["airborne"],
+                # value["airborne"],
 
                 1 if value["surpasses"] else 0,
                 1 if value["crater_out"] else 0,
@@ -75,9 +72,7 @@ class Source:
                     labels
                 ]
             )
-
         return classes
-
 
     def normalize_data( self ) -> list[ list[str] | list[list[float]] | list[list[int]] ]:
         """
@@ -100,7 +95,6 @@ class Source:
 
         # unpacking gets rid of the order of things
         return [*fss,*ros,*rcs]
-
     
     def write_to_csv( self,data_matrix:list[ list[str] | list[list[float]] | list[list[int]] ] ) -> None:
         ids_file = f"{self.path}/ids.csv"
