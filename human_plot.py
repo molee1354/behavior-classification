@@ -1,8 +1,10 @@
 import re
+import sys
 import json
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+
 import var
 
 class Classification:
@@ -11,7 +13,7 @@ class Classification:
 
         with open( filepath,'r' ) as f:
             self.data_dict = json.load(f)
-            
+        
         self.velocities, self.angles = self.__get_fields()
 
         # sorting the angles and velocities
@@ -31,7 +33,6 @@ class Classification:
             angles.add( re.findall("_A([0-9]+)",key)[0] )
 
         return list(velocities),list(angles)
-
 
     def process_data( self ) -> None:
         """
@@ -57,7 +58,6 @@ class Classification:
         
         # set the behavior_matrix attribute
         self.behavior_matrix = behavior_matrix
-
 
     def plot_behavior_map( self ) -> None:
         """
@@ -110,13 +110,13 @@ class Classification:
             hspace=0.2,
             wspace=0.2
         )
-        plt.show()
+        plt.savefig(f"./outputs/output_plots/human_classifications/{sys.argv[1]}.png")
 
 
 def main() -> None:
     filepath = var.human_root
     # human_classification = Classification( f"{filepath}/Human_Behavior_Bennu_1x.json" )
-    human_classification = Classification( f"{filepath}/Human_Behavior_Moon_1x.json" )
+    human_classification = Classification( f"{filepath}/{sys.argv[1]}.json" )
     human_classification.process_data()
     human_classification.plot_behavior_map()
 
