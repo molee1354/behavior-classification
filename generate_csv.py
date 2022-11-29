@@ -153,9 +153,9 @@ def main() -> None:
         "Bennu_1x_cls1108" : ["B1", "B2", "B3", "B4"]
     }
     names = [
-        "Ethan",
-        "Mokin",
-        "Peter"
+        # "Ethan",
+        "Mokin"
+        # "Peter"
         ]
 
     all_data = [
