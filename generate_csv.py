@@ -39,6 +39,7 @@ class Source:
         out = {}
         for data_file in json_list:
             filekey = re.findall("[EMB][1234]", data_file)[0]
+
             try:
                 with open(data_file, 'r') as file:
                     in_dict = json.load(file)
@@ -115,8 +116,6 @@ class Source:
 
         min_behavior_count = min(self.__get_behavior_count())
         for behavior in [fss, ros, rcs]:
-            last_idx = len(behavior)-1
-
             while len(behavior) > min_behavior_count:
                 behavior.remove( behavior[ r.randint(0,len(behavior)-1) ] )
 
@@ -139,12 +138,12 @@ class Source:
         with open(features_file, 'w') as file:
             file_writer = csv.writer(file, delimiter=',')
             for item in data_matrix:
-                file_writer.writerow( [item[self.FEATURES]] )
+                file_writer.writerow( item[self.FEATURES] )
 
         with open(labels_file, 'w') as file:
             file_writer = csv.writer(file, delimiter=',')
             for item in data_matrix:
-                file_writer.writerow( [item[self.LABELS]] )
+                file_writer.writerow( item[self.LABELS] )
 
 
 def main() -> None:
@@ -154,8 +153,8 @@ def main() -> None:
         "Bennu_1x_cls1108" : ["B1", "B2", "B3", "B4"]
     }
     names = [
-        # "Ethan",
-        # "Mokin",
+        "Ethan",
+        "Mokin",
         "Peter"
         ]
 
