@@ -1,0 +1,10 @@
+#!/bin/bash
+
+planets=('M1' 'M2' 'M3' 'M4' 'B1' 'B2' 'B3' 'B4' 'E1' 'E2')
+names=('Ethan' 'Mokin' 'Peter')
+
+for p in "${planets[@]}"; do
+    for n in "${names[@]}"; do
+        python3 human_plot.py "$p"-"$n"
+    done
+done

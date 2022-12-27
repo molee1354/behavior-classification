@@ -101,7 +101,7 @@ class Source:
 
         return classes
 
-    def normalize_data(self) -> list:
+    def normalize_data(self,duplicate=True) -> list:
         """
         Method to normalize the behaviors in the data.
         --> picking out the behavior with the least occurences, and
@@ -114,10 +114,17 @@ class Source:
         ros = [ point for point in data_matrix if point[self.LABELS] == [0, 1, 0] ]
         rcs = [ point for point in data_matrix if point[self.LABELS] == [0, 0, 1] ]
 
-        min_behavior_count = min(self.__get_behavior_count())
-        for behavior in [fss, ros, rcs]:
-            while len(behavior) > min_behavior_count:
-                behavior.remove( behavior[ r.randint(0,len(behavior)-1) ] )
+        if duplicate:
+            max_behavior_count = max(self.__get_behavior_count())
+            for behavior in [fss, ros, rcs]:
+                cap = len(behavior)-1
+                while len(behavior) < max_behavior_count:
+                    behavior.append( behavior[ r.randint(0,cap) ] )
+        else:
+            min_behavior_count = min(self.__get_behavior_count())
+            for behavior in [fss, ros, rcs]:
+                while len(behavior) > min_behavior_count:
+                    behavior.remove( behavior[ r.randint(0,len(behavior)-1) ] )
 
         return [*fss, *ros, *rcs]
 
@@ -128,7 +135,7 @@ class Source:
 
         ids_file = f"{self.out_path}/ids.csv"
         features_file = f"{self.out_path}/features.csv"
-        labels_file = f"{self.out_path}/labels.csv"
+        labels_file = f"{self.out_path}/labels3.csv"
 
         with open(ids_file, 'w') as file:
             file_writer = csv.writer(file, delimiter=',')
@@ -154,8 +161,8 @@ def main() -> None:
     }
     names = [
         # "Ethan",
-        "Mokin"
-        # "Peter"
+        # "Mokin",
+        "Peter"
         ]
 
     all_data = [
@@ -172,7 +179,7 @@ def main() -> None:
 
     # generating csv files
     datas = Source( all_data = all_data, all_human = all_human )
-    normalized_mat = datas.normalize_data()
+    normalized_mat = datas.normalize_data(duplicate=True)
     datas.write_to_csv( normalized_mat )
 
 
