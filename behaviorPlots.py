@@ -80,11 +80,13 @@ def processData(data_dict: dict) -> tuple[list[int],list[float]]:
             # initializing each row 
             behaviorList_I = []
             confidenceList_I = []
-            velocities = [re.findall("([0-9]+\.[0-9]+)",k)[0] for k in data_dict.keys() if f"_A{angle}" in k]
+            
+            # converting to floats for sorting
+            velocities = [float(re.findall("([0-9]+\.[0-9]+)",k)[0])
+                          for k in data_dict.keys() if f"_A{angle}" in k]
             velocities.sort()
             for vel in velocities:
-
-                key = f"V{vel}_A{angle}"
+                key = f"V{vel:.5f}_A{angle}"
 
                 # adding the confidence
                 confidenceList_I.append(data_dict[key]["confidence"])
@@ -115,7 +117,6 @@ def processData(data_dict: dict) -> tuple[list[int],list[float]]:
     return behaviorsList, confidenceList 
     
 
-
 def main():
 
     behavior_savepath = f"{var.output_root}/behaviors/computer"
@@ -143,7 +144,7 @@ def main():
     #unmatching = []
     x_axis = []
     for key in compDict:
-        v = re.findall("[0-9]+\.[0-9]*",key)[0]
+        v = float(re.findall("[0-9]+\.[0-9]*",key)[0])
         if v not in x_axis:
             x_axis.append(v)
     x_axis.sort()

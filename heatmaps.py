@@ -72,7 +72,8 @@ def processData(input_dict: dict, parameter: str) -> list[list[int]]:
             - A 2-D list of the values within the dictionary
     """
 
-    velocities = list(set([ re.findall("V[0-9]+\.[0-9]+",v)[0][1:] for v in input_dict ]))
+    velocities = list(set([float(re.findall("V[0-9]+\.[0-9]+",v)[0][1:])
+                           for v in input_dict ]))
     velocities.sort()
     # return [
     #     [input_dict[key][parameter] for key in [k for k in input_dict.keys() if f"_A{angle}" in k] ] for angle in var.angles
@@ -85,9 +86,8 @@ def processData(input_dict: dict, parameter: str) -> list[list[int]]:
         return_vector = []
         for vel in velocities:
             try:
-                return_vector.append(input_dict[f"V{vel}_A{angle}"][parameter])
+                return_vector.append(input_dict[f"V{vel:.5f}_A{angle}"][parameter])
             except KeyError:
-                # return_vector.append(-1)
                 pass
         
         return_matrix.append(return_vector)
@@ -119,11 +119,13 @@ def main():
 
     # humanData = processHuman(humanDict)
 
-    # not taking the consideration as possible outputs
+    # not taking the confidence as possible outputs
     keys = [ key for key in next(iter(compDict.values())) if (key != "confidence") ]
 
     # extracting the velocity values from the dictionary string key
-    velocities = list(set([ re.findall("V[0-9]+\.[0-9]+",v)[0][1:] for v in compDict ]))
+    velocities = list(set([float(re.findall("V[0-9]+\.[0-9]+",v)[0][1:]) 
+                           for v in compDict ]))
+    velocities.sort()
 
     # a dictionary of 2d lists for the heatmap
     datas = {key: fill_matrix( processData(compDict, key),len(velocities) ) for key in keys}
@@ -133,7 +135,7 @@ def main():
         'FS': 0,
         'RO': 1,
         'RC': 2,
-        -1: 3,
+        -1: 3 # for bad iterations, assign -1
     }
 
     # a list to convert the strings into the corresponding integers
@@ -167,7 +169,7 @@ def main():
     print(f"RCs: min/max = {min(rcs)}/{max(rcs)}\tmean/median = {mean(rcs):.2f}/{(median(rcs))}")
 
     #* plotting
-    fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(17,6))
+    fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(17,5))
     fig.suptitle(f"{TASK_ID} {TRIAL_ID} Quantities Comparison : {PLOT_DATA}", fontsize = 16, fontweight = "bold")
 
     y_axis = list(np.linspace(20, 70, 11, dtype=int)) # angles
